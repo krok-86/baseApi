@@ -1,8 +1,11 @@
 import { AppDataSource } from "./data-source"
 import * as express from "express";
+import { Request, Response, NextFunction } from "express";
 import * as cors from "cors";
 import * as BodyParser from "body-parser";
 import userRoutes from "./routes/user.routes";
+import { CustomError } from "./error";
+
 
 
 AppDataSource.initialize().then(async () => {
@@ -27,7 +30,18 @@ AppDataSource.initialize().then(async () => {
     app.use(cors())
     app.use(BodyParser.json());
 
-    app.use("/", userRoutes);
+    app.use("/", cors(),  userRoutes);
+
+    app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+      if (error instanceof CustomError) {
+      res.status(error.status || 500);
+  const message = error.message || "Something went wrong on the server side";
+  res.json({ status: error.status, message, stack: error.stack });
+  console.log("Error status: ", error.status);
+  console.log("Message :", message);
+      }
+    })
+
 app.listen({ port: 3003 }, async () => {
     console.log("Server up on http://localhost:3003");
     try {
