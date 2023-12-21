@@ -4,7 +4,7 @@ import { User } from "../entity/User";
 import { CustomError } from "../error";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
-import { DeleteResult, getRepository } from "typeorm";
+import { DeleteResult } from "typeorm";
 
 const userRepository = AppDataSource.getRepository(User);
 class UserController {
@@ -80,7 +80,6 @@ class UserController {
           expiresIn: "7d",
         }
       );
-      //fix? const { password, ...userData } = user.dataValues;
       res.json({ user, token });
     } catch (err) {
       err.message = "Server error: user was not authorized"; //add my err
