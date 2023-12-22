@@ -4,7 +4,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeor
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: string;//fix
+    id: string;
 
     @Column({
     type: "varchar",

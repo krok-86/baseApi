@@ -9,10 +9,10 @@ const router = Router();
 
 router.post('/registration', validation(userSchemaReg), UserController.registrationUser);
 router.post('/authorization',  validation(userSchemaAuth), UserController.authorizationUser);
-router.get('/authorization/me',  UserController.authorizationMeUser);
+router.get('/authorization/me', checkAuth, UserController.authorizationMeUser);
 router.get('/', UserController.getUser);
 router.get('/:id', UserController.getOneUser);
-router.delete('/:id', checkAuth, UserController.deleteUser);
-router.put('/:id', UserController.updateUser);
+router.delete('/:id', UserController.deleteUser);
+router.put('/:id', checkAuth, UserController.updateUser);
 
 export default router;

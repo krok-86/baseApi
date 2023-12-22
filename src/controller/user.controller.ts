@@ -29,7 +29,7 @@ class UserController {
       }
       const salt: string = await bcrypt.genSalt(10);
       const hash: string = await bcrypt.hash(newUser.password, salt);
-      const user: User = userRepository.create({
+      const user: User = await userRepository.save({
         fullName: newUser.fullName,
         email: newUser.email,
         dob: newUser.dob,
@@ -47,8 +47,8 @@ class UserController {
       const result: User = await userRepository.save(user);
       res.json({ result, token });
     } catch (err) {
-      err.message = "Server error: user was not created";
-      err.code = "500";
+      // err.message = "Server error: user was not created";
+      // err.code = "500";
       next(err);
     }
   };
@@ -95,16 +95,14 @@ class UserController {
 
     try {
       const user: User = await userRepository.findOne({
-        where: { fullName: req.body.fullName },//fix
+        where: { id: req.body.userUniqId },
       });
-      console.log(">>>>>>",user)
       if (!user) {
         throw new CustomError("user not found", 404);
       }
-      // const { password, ...userData } = user.dataValues;
       res.json(user);
     } catch (err) {
-      err.message = "Server error: user was not found"; //add my err
+      err.message = "Server error: user was not found";
       err.code = "500";
       next(err);
     }
