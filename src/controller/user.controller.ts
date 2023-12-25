@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { AppDataSource } from "../data-source";
-import { User } from "../entity/User.entity";
+import  AppDataSource  from "../data-source";
+import  {User}  from "../entity/User.entity";
 import { CustomError } from "../error";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";

@@ -1,4 +1,4 @@
-import { AppDataSource } from "./data-source";
+import  AppDataSource  from "./data-source";
 import * as express from "express";
 import { Request, Response, NextFunction } from "express";
 import * as cors from "cors";

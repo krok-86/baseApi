@@ -1,22 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { User } from "../entity/User.entity";
+import { Schema } from "yup";
 
-// interface UserSchema {
-//     fullName: string;
-//     password: string;
-//     dob: Date;
-//     email: string;
-//   }
 const validation =
-  (schema) =>
+  (schema: Schema) =>
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const body = req.body;
 
     try {
       await schema.validate(body);
       next();
-    } catch (err) {
-      err.message = err.errors[0];
+    } catch (err:any) {
+      // err.message = err.errors[0];
+      err.message = err.details[0].message
       err.status = 400;
       next(err);
     }
