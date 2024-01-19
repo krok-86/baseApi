@@ -7,7 +7,7 @@ import { checkAuth } from "../middleware/checkAuth";
 const router = Router();
 //create user
 
-router.post('/registration', validation(userSchemaReg), UserController.registrationUser);
+router.post('/registration', validation(userSchemaReg), UserController.registrationUser);//validation(userSchemaReg),
 router.post('/authorization',  validation(userSchemaAuth), UserController.authorizationUser);
 router.get('/authorization/me', checkAuth, UserController.authorizationMeUser);
 router.get('/', UserController.getUser);
