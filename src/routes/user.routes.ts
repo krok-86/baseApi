@@ -13,6 +13,6 @@ router.get('/authorization/me', checkAuth, UserController.authorizationMeUser);
 router.get('/', UserController.getUser);
 router.get('/:id', UserController.getOneUser);
 router.delete('/:id', UserController.deleteUser);
-router.put('/:id', checkAuth, UserController.updateUser);
+router.put('/:id', checkAuth, UserController.updateUser);//checkAuth,
 
 export default router;

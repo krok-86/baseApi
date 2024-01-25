@@ -45,7 +45,7 @@ class UserController {
         }
       );
       const result: User = await userRepository.save(user);
-      res.json({ result, token });
+      res.json({ userData: result, token });
     } catch (err) {
       // err.message = "Server error: user was not created";
       // err.code = "500";
@@ -80,7 +80,7 @@ class UserController {
           expiresIn: "7d",
         }
       );
-      res.json({ user, token });
+      res.json({ userData: user, token });
     } catch (err) {
       err.message = "Server error: user was not authorized"; //add my err
       err.code = "500";
@@ -108,9 +108,7 @@ class UserController {
     }
   };
 
-
-
-  static getUser = async (req: Request, res: Response, next: NextFunction
+static getUser = async (req: Request, res: Response, next: NextFunction
     ): Promise<void>  => {
     try {
       const users: User[] = await userRepository.find();
@@ -169,8 +167,17 @@ class UserController {
       if (!user) {
         throw new CustomError("User is not found", 404);
       }
+
+      const salt: string = await bcrypt.genSalt(10);
+      const hash: string = await bcrypt.hash(user.password, salt);
+
       userRepository.merge(user, req.body);
-      const results = await userRepository.save(user);
+      const results = await userRepository.save({
+        fullName: user.fullName,
+        email: user.email,
+        dob: user.dob,
+        password: hash,
+      });
       res.json(results);
     } catch (err) {
       next(err);
@@ -179,34 +186,3 @@ class UserController {
 }
 export default UserController;
 
-// app.get("/users", async function (req: Request, res: Response) {
-//     const users = await userRepository.find()
-//     res.json(users)
-//   })
-
-//   app.get("/users/:id", async function (req: Request, res: Response) {
-//     const results = await userRepository.findOneBy({
-//         id: req.params.id,
-//     })
-//     return res.send(results)
-//   })
-
-//   app.post("/users", async function (req: Request, res: Response) {
-//     const user = await userRepository.create(req.body)
-//     const results = await userRepository.save(user)
-//     return res.send(results)
-//   })
-
-//   app.put("/users/:id", async function (req: Request, res: Response) {
-//     const user = await userRepository.findOneBy({
-//         id: req.params.id,
-//     })
-//     userRepository.merge(user, req.body)
-//     const results = await userRepository.save(user)
-//     return res.send(results)
-//   })
-
-//   app.delete("/users/:id", async function (req: Request, res: Response) {
-//     const results = await userRepository.delete(req.params.id)
-//     return res.send(results)
-//   })
