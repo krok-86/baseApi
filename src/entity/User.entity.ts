@@ -12,7 +12,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeor
     fullName: string;
 
     @Column({
-    unique: true,
+    // unique: true,
     type: "text"
     })
     email: string;
@@ -22,6 +22,10 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeor
 
     @Column()
     password: string;
+
+    @Column()
+    avatarImg: string;
+    nullable: true;
 }
 // export default User;
 

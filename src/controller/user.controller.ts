@@ -19,6 +19,8 @@ class UserController {
       dob: req.body.dob,
       password: req.body.password,
       id: "",
+      avatarImg: req.body.avatarImg,
+      nullable: true
     };
     try {
       const userWithEmail: User | undefined = await userRepository.findOne({
@@ -34,6 +36,7 @@ class UserController {
         email: newUser.email,
         dob: newUser.dob,
         password: hash,
+        avatarImg: newUser.avatarImg,
       });
       const token: string = jwt.sign(
         {
@@ -168,21 +171,41 @@ static getUser = async (req: Request, res: Response, next: NextFunction
         throw new CustomError("User is not found", 404);
       }
 
-      const salt: string = await bcrypt.genSalt(10);
-      const hash: string = await bcrypt.hash(user.password, salt);
+      if (req.body.password) {
+        const salt: string = await bcrypt.genSalt(10);
+        const hash: string = await bcrypt.hash(user.password, salt);
+        req.body.password = hash;
+      }
 
       userRepository.merge(user, req.body);
       const results = await userRepository.save({
         fullName: user.fullName,
         email: user.email,
         dob: user.dob,
-        password: hash,
+        password: user.password,
+        avatarImg: req.file ? req.file.path : "",
       });
       res.json(results);
     } catch (err) {
       next(err);
     }
   }
+  // static loadAvatar = async (req: Request, res: Response, next: NextFunction
+  //   ): Promise<void>  => {
+  //     try {
+
+  //     } catch (err) {
+  //       next(err);
+  //     }
+  //   }
+  //   static updateAvatar = async (req: Request, res: Response, next: NextFunction
+  //     ): Promise<void>  => {
+  //       try {
+
+  //       } catch (err) {
+  //         next(err);
+  //       }
+  //     }
 }
 export default UserController;
 
