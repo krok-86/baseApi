@@ -19,7 +19,7 @@ class UserController {
       dob: req.body.dob,
       password: req.body.password,
       id: "",
-      avatarImg: req.body.avatarImg,
+      avatarImg: req.body.avatarImg || '.',
       nullable: true
     };
     try {
@@ -50,8 +50,8 @@ class UserController {
       const result: User = await userRepository.save(user);
       res.json({ userData: result, token });
     } catch (err) {
-      // err.message = "Server error: user was not created";
-      // err.code = "500";
+       err.message = "Server error: user was not created";
+       err.code = "500";
       next(err);
     }
   };
@@ -110,8 +110,7 @@ class UserController {
       next(err);
     }
   };
-
-static getUser = async (req: Request, res: Response, next: NextFunction
+  static getUser = async (req: Request, res: Response, next: NextFunction
     ): Promise<void>  => {
     try {
       const users: User[] = await userRepository.find();
@@ -179,6 +178,7 @@ static getUser = async (req: Request, res: Response, next: NextFunction
 
       userRepository.merge(user, req.body);
       const results = await userRepository.save({
+        id: user.id,
         fullName: user.fullName,
         email: user.email,
         dob: user.dob,
@@ -190,22 +190,6 @@ static getUser = async (req: Request, res: Response, next: NextFunction
       next(err);
     }
   }
-  // static loadAvatar = async (req: Request, res: Response, next: NextFunction
-  //   ): Promise<void>  => {
-  //     try {
 
-  //     } catch (err) {
-  //       next(err);
-  //     }
-  //   }
-  //   static updateAvatar = async (req: Request, res: Response, next: NextFunction
-  //     ): Promise<void>  => {
-  //       try {
-
-  //       } catch (err) {
-  //         next(err);
-  //       }
-  //     }
 }
 export default UserController;
-

@@ -14,6 +14,7 @@ AppDataSource.initialize()
     app.use(cors());
 
     app.use("/users", cors(), userRoutes);
+    app.use(express.static('public/uploads'));
 
     app.use(
       (

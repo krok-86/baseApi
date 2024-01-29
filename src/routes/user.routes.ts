@@ -14,9 +14,6 @@ router.get('/authorization/me', checkAuth, UserController.authorizationMeUser);
 router.get('/', UserController.getUser);
 router.get('/:id', UserController.getOneUser);
 router.delete('/:id', UserController.deleteUser);
-router.put('/:id', checkAuth, validation(userSchemaReg), upload.single('image'), UserController.updateUser);//checkAuth,
-
-// router.post('/upload', upload.single('image'), checkAuth, UserController.loadAvatar);
-// router.patch('/upload/id', upload.single('image'), checkAuth, UserController.updateAvatar);
+router.put('/:id', checkAuth, upload.single('image'), UserController.updateUser);//validation(userSchemaReg)
 
 export default router;
