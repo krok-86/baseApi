@@ -1,31 +1,29 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm"
 
 @Entity()
- export class User {
+export class User {
     @PrimaryGeneratedColumn()
     id: string;
 
     @Column({
-    type: "varchar",
-    length: "230",
+        type: "varchar",
+        length: "230",
     })
     fullName: string;
 
     @Column({
-    // unique: true,
-    type: "text"
+        // unique: true,
+        type: "text"
     })
     email: string;
 
-    @CreateDateColumn({type:'date'})
+    @CreateDateColumn({type:'date', nullable: true})
     dob: Date;
 
     @Column()
     password: string;
 
-    @Column()
+    @Column({ nullable: true })
     avatarImg: string;
-    nullable: true;
 }
-// export default User;
 

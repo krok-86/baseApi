@@ -8,12 +8,12 @@ import upload from "../middleware/upload";
 const router = Router();
 //create user
 
-router.post('/registration', validation(userSchemaReg), UserController.registrationUser);//validation(userSchemaReg), upload.single('image'),
+router.post('/registration',validation(userSchemaReg), UserController.registrationUser);
 router.post('/authorization',  validation(userSchemaAuth), UserController.authorizationUser);
 router.get('/authorization/me', checkAuth, UserController.authorizationMeUser);
 router.get('/', UserController.getUser);
 router.get('/:id', UserController.getOneUser);
 router.delete('/:id', UserController.deleteUser);
-router.put('/:id', checkAuth, upload.single('image'), UserController.updateUser);//validation(userSchemaReg)
+router.put('/:id', checkAuth, upload.single('image'), UserController.updateUser);
 
 export default router;
