@@ -14,7 +14,7 @@ class UserController {
     next: NextFunction
   ): Promise<void> => {
     const newUser: User = {
-      fullName: req.body.fullName,
+      fullName: req.body.fullName || null,
       email: req.body.email,
       dob: req.body.dob || null,
       password: req.body.password,

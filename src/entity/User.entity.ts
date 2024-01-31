@@ -6,6 +6,7 @@ export class User {
     id: string;
 
     @Column({
+        nullable: true,
         type: "varchar",
         length: "230",
     })
