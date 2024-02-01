@@ -19,7 +19,7 @@ class UserController {
       dob: req.body.dob || null,
       password: req.body.password,
       id: "",
-      avatarImg: req.body.avatarImg || '.',
+      avatarImg: req.body.avatarImg || ".",
     };
     try {
       const userWithEmail: User | undefined = await userRepository.findOne({
@@ -171,7 +171,7 @@ class UserController {
 
       if (req.body.password) {
         const salt: string = await bcrypt.genSalt(10);
-        const hash: string = await bcrypt.hash(user.password, salt);
+        const hash: string = await bcrypt.hash(req.body.password, salt);
         req.body.password = hash;
       }
 
@@ -182,7 +182,7 @@ class UserController {
         email: user.email,
         dob: user.dob,
         password: user.password,
-        avatarImg: req.file ? req.file.filename : "",
+        avatarImg: user.avatarImg,//req.file ? req.file.filename : ""
       });
       res.json(results);
     } catch (err) {
