@@ -9,9 +9,9 @@ const validation =
     try {
       await schema.validate(body);
       next();
-    } catch (err:any) {
-      err.message = err.details[0].message
-      err.status = 400;
+    } catch (err: any) {
+      (err.message = err.errors[0]),
+      (err.status = 400);
       next(err);
     }
   };

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import  AppDataSource  from "../data-source";
-import  {User}  from "../entity/User.entity";
+import AppDataSource from "../data-source";
+import { User } from "../entity/User.entity";
 import { CustomError } from "../error";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
@@ -49,8 +49,8 @@ class UserController {
       const result: User = await userRepository.save(user);
       res.json({ userData: result, token });
     } catch (err) {
-       err.message = "Server error: user was not created";
-       err.code = "500";
+      err.message = "Server error: user was not created";
+      err.code = "500";
       next(err);
     }
   };
@@ -94,7 +94,6 @@ class UserController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-
     try {
       const user: User = await userRepository.findOne({
         where: { id: req.body.userUniqId },
@@ -109,8 +108,11 @@ class UserController {
       next(err);
     }
   };
-  static getUser = async (req: Request, res: Response, next: NextFunction
-    ): Promise<void>  => {
+  static getUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const users: User[] = await userRepository.find();
       if (!users) {
@@ -121,44 +123,53 @@ class UserController {
       next(err);
     }
   };
-  static getOneUser = async (req: Request, res: Response, next: NextFunction
-    ): Promise<void> => {
-      try {
-        const id:string = req.params.id;
-        if (!id) {
-          throw new CustomError("User's id is not correct", 400);
-        }
-        const user: User[] = await userRepository.find({
-          where: { id }
-        });
-        if (!user) {
-          throw new CustomError("User is not found", 404);
-        }
-        res.json(user);
-      } catch (err) {
-        next(err);
-      }
-  };
-  static deleteUser = async (req: Request, res: Response, next: NextFunction
-    ): Promise<void> => {
+  static getOneUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const id: string = req.params.id;
       if (!id) {
-        throw new CustomError("User id is not correct", 400);// ошибка не предан параметр
+        throw new CustomError("User's id is not correct", 400);
+      }
+      const user: User[] = await userRepository.find({
+        where: { id },
+      });
+      if (!user) {
+        throw new CustomError("User is not found", 404);
+      }
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  };
+  static deleteUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const id: string = req.params.id;
+      if (!id) {
+        throw new CustomError("User id is not correct", 400); // ошибка не предан параметр
       }
       const user: DeleteResult = await userRepository.delete(req.params.id); // юзер не найден или уже удален
       if (!user) {
         throw new CustomError("User is not found", 404);
-      } 
+      }
       res.json({ message: "User deleted!" });
     } catch (err) {
       next(err);
     }
   };
-  static updateUser = async (req: Request, res: Response, next: NextFunction
-    ): Promise<void>  => {
+  static updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-      const id:string = req.params.id;
+      const id: string = req.params.id;
       if (!id) {
         throw new CustomError("User id is not correct", 400);
       }
@@ -168,13 +179,17 @@ class UserController {
       if (!user) {
         throw new CustomError("User is not found", 404);
       }
-
+      const userWithEmail: User = await userRepository.findOneBy({
+        email: req.body.email,
+      });
+      if (userWithEmail) {
+        throw new CustomError("This email has arleady been registered", 400);
+      }
       if (req.body.password) {
         const salt: string = await bcrypt.genSalt(10);
         const hash: string = await bcrypt.hash(req.body.password, salt);
         req.body.password = hash;
       }
-
       userRepository.merge(user, req.body);
       const results = await userRepository.save({
         id: user.id,
@@ -182,14 +197,12 @@ class UserController {
         email: user.email,
         dob: user.dob,
         password: user.password,
-        avatarImg: user.avatarImg,//req.file ? req.file.filename : ""
+        avatarImg: req.file?.filename || user.avatarImg,
       });
       res.json(results);
     } catch (err) {
       next(err);
     }
-  }
-
-
+  };
 }
 export default UserController;

@@ -1,30 +1,34 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm"
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from "typeorm";
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn()
-    id: string;
+  @PrimaryGeneratedColumn()
+  id: string;
 
-    @Column({
-        nullable: true,
-        type: "varchar",
-        length: "230",
-    })
-    fullName: string;
+  @Column({
+    nullable: true,
+    type: "varchar",
+    length: "230",
+  })
+  fullName: string;
 
-    @Column({
-        // unique: true,
-        type: "text"
-    })
-    email: string;
+  @Column({
+    unique: true,
+    type: "text",
+  })
+  email: string;
 
-    @CreateDateColumn({type:'date', nullable: true})
-    dob: Date;
+  @CreateDateColumn({ type: "date", nullable: true })
+  dob: Date;
 
-    @Column()
-    password: string;
+  @Column()
+  password: string;
 
-    @Column({ nullable: true })
-    avatarImg: string;
+  @Column({ nullable: true })
+  avatarImg: string;
 }
-

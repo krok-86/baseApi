@@ -1,9 +1,6 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import {User} from "./entity/User.entity"
-
-console.log('>>>>>>>>>>>>>>>', __dirname);
-
+// import {User} from "./entity/User.entity"
 
   const AppDataSource = new DataSource({
     type: "postgres",
@@ -12,21 +9,12 @@ console.log('>>>>>>>>>>>>>>>', __dirname);
     username: "testuser",
     password: "123456",
     database: "baseApidb",
-    synchronize: true,
+    synchronize: false,
     logging: false,
-    entities: [User],
-    // entities: ['src/entity/*{.ts,.js}'],
+    // entities: [User],
+    entities: ['src/entity/*{.ts,.js}'],
     migrations: ["src/migration/*{.ts,.js}"],
     subscribers: [/*...*/],
 })
-
-
-//  AppDataSource.initialize()
-//     .then(() => {
-//         console.log("Data Source has been initialized!")
-//     })
-//     .catch((err) => {
-//         console.error("Error during Data Source initialization", err)
-//     })
 
    export default AppDataSource;
