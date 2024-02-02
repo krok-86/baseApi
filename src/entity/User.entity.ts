@@ -20,6 +20,7 @@ export class User {
   @Column({
     unique: true,
     type: "text",
+    nullable: false
   })
   email: string;
 

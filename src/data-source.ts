@@ -9,7 +9,7 @@ import { DataSource } from "typeorm"
     username: "testuser",
     password: "123456",
     database: "baseApidb",
-    synchronize: false,
+    synchronize: true,
     logging: false,
     // entities: [User],
     entities: ['src/entity/*{.ts,.js}'],

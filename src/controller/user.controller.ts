@@ -163,13 +163,10 @@ class UserController {
       next(err);
     }
   };
-  static updateUser = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  static updateUser = async (req: Request, res: Response, next: NextFunction
+    ): Promise<void>  => {
     try {
-      const id: string = req.params.id;
+      const id:string = req.params.id;
       if (!id) {
         throw new CustomError("User id is not correct", 400);
       }
@@ -179,17 +176,27 @@ class UserController {
       if (!user) {
         throw new CustomError("User is not found", 404);
       }
+
+      if (req.body.email === '') {
+        throw new CustomError("Email field have to be filled", 400);
+      }
+
+      if (req.body.email) {
       const userWithEmail: User = await userRepository.findOneBy({
         email: req.body.email,
       });
-      if (userWithEmail) {
-        throw new CustomError("This email has arleady been registered", 400);
+
+      if(userWithEmail && (userWithEmail.id !== user.id)) {
+          throw new CustomError("This email has arleady been registered", 400);
       }
+    }
+
       if (req.body.password) {
         const salt: string = await bcrypt.genSalt(10);
         const hash: string = await bcrypt.hash(req.body.password, salt);
         req.body.password = hash;
       }
+
       userRepository.merge(user, req.body);
       const results = await userRepository.save({
         id: user.id,
@@ -203,6 +210,6 @@ class UserController {
     } catch (err) {
       next(err);
     }
-  };
+  }
 }
 export default UserController;
