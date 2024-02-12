@@ -19,7 +19,7 @@ class UserController {
       dob: req.body.dob || null,
       password: req.body.password,
       id: "",
-      avatarImg: req.body.avatarImg || ".",
+      avatarImg: req.body.avatarImg || "",
     };
     try {
       const userWithEmail: User | undefined = await userRepository.findOne({
