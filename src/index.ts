@@ -4,8 +4,23 @@ import { Request, Response, NextFunction } from "express";
 import * as cors from "cors";
 import userRoutes from "./routes/user.routes";
 
+import { Book } from "./entity/Book.entity";
+
+
+
 AppDataSource.initialize()
   .then(async () => {
+
+    const book = new Book()
+book.title = "Me and Bears"
+book.description = "I am near polar bears"
+book.picture = "photo-with-bears.jpg"
+book.rating  = 1
+book.dateOfIssue = "1212/12/12"
+
+await AppDataSource.manager.save(book)
+console.log("Book has been saved. Book id is", book.id)
+
     console.log(
       "Here you can setup and run express / fastify / any other framework."
     );

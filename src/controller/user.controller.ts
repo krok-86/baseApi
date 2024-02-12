@@ -20,6 +20,7 @@ class UserController {
       password: req.body.password,
       id: "",
       avatarImg: req.body.avatarImg || "",
+      
     };
     try {
       const userWithEmail: User | undefined = await userRepository.findOne({

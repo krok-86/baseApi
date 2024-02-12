@@ -3,7 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { Rating } from "./Rating.entyty";
 
 @Entity()
 export class User {
@@ -32,4 +34,8 @@ export class User {
 
   @Column({ nullable: true })
   avatarImg: string;
+
+  @OneToMany(() => Rating, (rating) => rating.user)
+    ratings: Rating[]
+    
 }
