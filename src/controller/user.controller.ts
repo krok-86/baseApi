@@ -19,7 +19,7 @@ class UserController {
       email: req.body.email,
       dob: req.body.dob || null,
       password: req.body.password,
-      id: "",
+      id: Number(),
       avatarImg: req.body.avatarImg || "",
       cart: new Cart|| null,//fix?
       ratings: [] || null,//fix?
@@ -132,7 +132,7 @@ class UserController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const id: string = req.params.id;
+      const id:number = Number(req.params.id);
       if (!id) {
         throw new CustomError("User's id is not correct", 400);
       }
@@ -210,7 +210,7 @@ class UserController {
       });
 
       const user: User = await userRepository.findOneBy({
-        id: req.params.id,
+        id: Number(req.params.id),
       });
       if (!user) {
         throw new CustomError("User is not found", 404);
