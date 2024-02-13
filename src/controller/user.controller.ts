@@ -5,6 +5,7 @@ import { CustomError } from "../error";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { DeleteResult } from "typeorm";
+import { Cart } from "../entity/Cart.entity";
 
 const userRepository = AppDataSource.getRepository(User);
 class UserController {
@@ -20,7 +21,8 @@ class UserController {
       password: req.body.password,
       id: "",
       avatarImg: req.body.avatarImg || "",
-      
+      cart: new Cart|| null,//fix?
+      ratings: [] || null,//fix?
     };
     try {
       const userWithEmail: User | undefined = await userRepository.findOne({

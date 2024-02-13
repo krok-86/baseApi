@@ -4,8 +4,11 @@ import {
   Column,
   CreateDateColumn,
   OneToMany,
+  JoinColumn,
+  OneToOne,
 } from "typeorm";
 import { Rating } from "./Rating.entyty";
+import { Cart } from "./Cart.entity";
 
 @Entity()
 export class User {
@@ -35,7 +38,10 @@ export class User {
   @Column({ nullable: true })
   avatarImg: string;
 
+  @OneToOne(() => Cart)
+    @JoinColumn()
+    cart: Cart;
+
   @OneToMany(() => Rating, (rating) => rating.user)
-    ratings: Rating[]
-    
+    ratings: Rating[];
 }

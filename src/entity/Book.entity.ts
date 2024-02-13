@@ -1,29 +1,47 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from "typeorm"
-import { Rating } from "./Rating.entyty"
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+  CreateDateColumn,
+} from "typeorm";
+import { Rating } from "./Rating.entyty";
+import { Author } from "./Author.entity";
+import { Genre } from "./Genre.entity";
 
 @Entity()
 export class Book {
-    @PrimaryGeneratedColumn()
-    id: string
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({length: 100,})
-    title: string
+  @Column({ length: 100 })
+  title: string;
 
-    @Column("text")
-    description: string
+  @Column("text")
+  description: string;
 
-    @Column()
-    picture: string
+  @Column()
+  picture: string;
 
-    @Column("smallint")
-    rating: number
+  @Column("smallint")
+  rating: number;
 
-    @Column({ type: "date" })
-    dateOfIssue: string
+  @CreateDateColumn({ type: "date", nullable: true })
+  dateOfIssue: Date;
 
-    @OneToMany(() => Rating, (rating) => rating.book)
-    rate: Rating[]//?
+  @Column({ nullable: true })
+  authorId: number;
 
-    @ManyToOne(() => Book, (book) => book.author)
-    book: Book
+  @Column({ nullable: true })
+  genreId: number;
+
+  @OneToMany(() => Rating, (rating) => rating.books)
+  ratings: Rating[];
+
+  @OneToMany(() => Genre, (genre) => genre.books)
+  genre: Genre[];
+
+  @ManyToOne(() => Author, (author) => author.books)
+  author: Book;
 }

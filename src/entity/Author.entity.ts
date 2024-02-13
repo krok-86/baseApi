@@ -5,11 +5,11 @@ import { Book } from "./Book.entity"
 @Entity()
 export class Author {
     @PrimaryGeneratedColumn()
-    id: string
+    id: number
 
     @Column({length: 100,})
     name: string
 
-    @OneToMany(() => Book, (book) => book.)
+    @OneToMany(() => Book, (book) => book.author)
     books: Book[]
 }

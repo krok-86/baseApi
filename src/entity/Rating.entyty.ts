@@ -7,11 +7,17 @@ import { Book } from "./Book.entity"
 @Entity()
 export class Rating {
     @PrimaryGeneratedColumn()
-    id: string
+    id: number
 
-    @ManyToOne(() => User, (user) => user.ratings)
+    @Column()
+    userId: number
+
+    @Column()
+    bookId: number
+
+    @ManyToOne(() => User, (user) => user.ratings)//photo
     user: User
 
     @ManyToOne(() => Book, (book) => book.rating)
-    book: Book
+    books: Book
 }
