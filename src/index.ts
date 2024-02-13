@@ -24,6 +24,7 @@ AppDataSource.initialize()
 // book.description = "A thrilling detective story about a missing necklace"
 // book.picture = "mystery-necklace.jpg"
 // book.rating  = 3
+// book.price = 2300
 // book.dateOfIssue = null
 // book.authorId = null
 // book.genreId = null
