@@ -42,5 +42,29 @@ class BookController {
       next(err);
     }
   };
+
+  static updateBook = async (req: Request, res: Response, next: NextFunction
+    ): Promise<void>  => {
+    try {
+      const id:number = Number(req.params.id);
+      if (!id) {
+        throw new CustomError("User id is not correct", 400);
+      }
+      const results = await bookRepository.update(id, {
+        rating: req.body.rating
+      });
+
+      const book: Book = await bookRepository.findOneBy({
+        id: Number(req.params.id),
+      });
+      if (!book) {
+        throw new CustomError("User is not found", 404);
+      }
+
+      res.json(book);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
   export default BookController;

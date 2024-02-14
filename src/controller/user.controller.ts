@@ -169,7 +169,7 @@ class UserController {
   static updateUser = async (req: Request, res: Response, next: NextFunction
     ): Promise<void>  => {
     try {
-      const id:string = req.params.id;
+      const id:number = Number(req.params.id);
       if (!id) {
         throw new CustomError("User id is not correct", 400);
       }

@@ -27,7 +27,7 @@ export class Book {
   @Column("smallint")
   rating: number;
 
-  @Column("smallint")
+  @Column("int")
   price: number;
 
   @CreateDateColumn({ type: "date", nullable: true })
