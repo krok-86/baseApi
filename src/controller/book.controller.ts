@@ -12,7 +12,7 @@ class BookController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const books: Book[] = await bookRepository.find();
+      const books: Book[] = await bookRepository.find({relations:{author:true}});
       if (!books) {
         throw new CustomError("Users are not found", 404);
       }
@@ -33,6 +33,7 @@ class BookController {
       }
       const book: Book[] = await bookRepository.find({
         where: { id },
+        relations:{author:true}
       });
       if (!book) {
         throw new CustomError("Book is not found", 404);

@@ -6,31 +6,23 @@ import userRoutes from "./routes/user.routes";
 
 import { Book } from "./entity/Book.entity";
 import bookRoutes from "./routes/book.routes";
-
-// type BookType = {
-//   id: number;
-//   title: string;
-//   description: string;
-//   picture: string;
-//   rating: number;
-//   dateOfIssue: Date;
-// }
+import genreRoutes from "./routes/genre.routes";
 
 AppDataSource.initialize()
   .then(async () => {
 
-    const book = new Book
-book.title = "Fantasy World: The Land of Magic"
-book.description = "A thrilling detective story about a missing necklace"
-book.picture = "mystery-necklace.jpg"
-book.rating  = 3
-book.price = 2300
-book.dateOfIssue = null
-book.authorId = null
-book.genreId = null
+//     const book = new Book
+// book.title = "Fantasy "
+// book.description = "A thrilling detective story about a missing necklace"
+// book.picture = "mystery-necklace.jpg"
+// book.rating  = 3
+// book.price = 2300
+// book.dateOfIssue = null
+// book.authorId = null
+// book.genreId = null
 
-await AppDataSource.manager.save(book)
-console.log("Book has been saved. Book id is", book.id)
+// await AppDataSource.manager.save(book)
+// console.log("Book has been saved. Book id is", book.id)
 
     console.log(
       "Here you can setup and run express / fastify / any other framework."
@@ -41,6 +33,7 @@ console.log("Book has been saved. Book id is", book.id)
 
     app.use("/users", cors(), userRoutes);
     app.use("/books", cors(), bookRoutes);
+    app.use("/genres", cors(), genreRoutes);
     app.use(express.static("uploads"));
 
     app.use(
