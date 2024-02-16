@@ -46,5 +46,5 @@ export class Book {
   genre: Genre[];
 
   @ManyToOne(() => Author, (author) => author.books)
-  author: Book;
+  author: Author;
 }

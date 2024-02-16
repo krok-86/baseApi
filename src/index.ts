@@ -12,7 +12,7 @@ AppDataSource.initialize()
   .then(async () => {
 
 //     const book = new Book
-// book.title = "Fantasy "
+// book.title = "illing"
 // book.description = "A thrilling detective story about a missing necklace"
 // book.picture = "mystery-necklace.jpg"
 // book.rating  = 3

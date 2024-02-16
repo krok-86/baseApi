@@ -5,6 +5,9 @@ import { Book } from "../entity/Book.entity";
 
 const bookRepository = AppDataSource.getRepository(Book);
 
+// type IdType = {
+// genreId: number;
+// }
 class BookController {
   static getBooks = async (
     req: Request,
@@ -12,15 +15,40 @@ class BookController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const books: Book[] = await bookRepository.find({relations:{author:true}});
-      if (!books) {
-        throw new CustomError("Users are not found", 404);
+      let { genreId, limit, page} = req.query;
+      const pageNum = typeof page === "string" ? parseInt(page) : 1;
+      const limitNum = typeof limit === "string" ? parseInt(limit) : 9;
+      
+      const offset = (pageNum - 1) * limitNum;
+
+      let books: Book[] = [];
+
+       if(!genreId) {
+         books = await bookRepository.find({
+          relations: ["genre"],
+          skip: offset,
+          take: limitNum
+          });
+       } else {
+        books = await bookRepository.find({
+        where: {
+          genre: { id: Number(genreId) }
+        },
+        relations: ["genre"],
+        skip: offset,
+        take: limitNum
+        });
+      }
+      if (books.length === 0) {
+        throw new CustomError("Books are not found", 404);
       }
       res.json(books);
     } catch (err) {
       next(err);
     }
   };
+
+
   static getOneBook = async (
     req: Request,
     res: Response,
@@ -69,4 +97,5 @@ class BookController {
     }
   }
 }
+
   export default BookController;
