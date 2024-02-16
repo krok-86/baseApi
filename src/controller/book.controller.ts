@@ -55,8 +55,9 @@ class BookController {
         rating: req.body.rating
       });
 
-      const book: Book = await bookRepository.findOneBy({
-        id: Number(req.params.id),
+      const book: Book = await bookRepository.findOne({
+        where: {id: Number(req.params.id)},
+        relations:{author:true}
       });
       if (!book) {
         throw new CustomError("User is not found", 404);
