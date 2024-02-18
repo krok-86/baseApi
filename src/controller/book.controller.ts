@@ -2,52 +2,87 @@ import { Request, Response, NextFunction } from "express";
 import AppDataSource from "../data-source";
 import { CustomError } from "../error";
 import { Book } from "../entity/Book.entity";
+import { Between, In, OrderByCondition} from "typeorm";
 
 const bookRepository = AppDataSource.getRepository(Book);
 
 // type IdType = {
 // genreId: number;
 // }
-class BookController {
-  static getBooks = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      let { genreId, limit, page} = req.query;
-      const pageNum = typeof page === "string" ? parseInt(page) : 1;
-      const limitNum = typeof limit === "string" ? parseInt(limit) : 9;
-      
-      const offset = (pageNum - 1) * limitNum;
+  class BookController {
+   static getBooks = async (
+   req: Request,
+   res: Response,
+   next: NextFunction
+   ): Promise<void> => {
+   try {
+   let { genre, price, sort, limit, page } = req.query;
+   const pageNum = typeof page === "string" ? parseInt(page) : 1;
+   const limitNum = typeof limit === "string" ? parseInt(limit) : 9;
 
-      let books: Book[] = [];
+   const offset = (pageNum - 1) * limitNum;
 
-       if(!genreId) {
-         books = await bookRepository.find({
-          relations: ["genre"],
-          skip: offset,
-          take: limitNum
-          });
-       } else {
-        books = await bookRepository.find({
-        where: {
-          genre: { id: Number(genreId) }
-        },
-        relations: ["genre"],
-        skip: offset,
-        take: limitNum
-        });
+   let books: Book[] = [];
+   let orderCondition: OrderByCondition = {};
+
+   let whereCondition: any = {
+    relations: ["genre"],
+    skip: offset,
+    take: limitNum,
+    join: {
+      alias: "book",
+      innerJoinAndSelect: {
+      author: "book.author",
+      //       rating: "book.rating"
       }
-      if (books.length === 0) {
-        throw new CustomError("Books are not found", 404);
-      }
+     }
+   };
+
+   if (genre && typeof genre === 'string' ) {
+    const genresArr: number[] = genre.split('-').map((item) => Number(item));
+    whereCondition.where = {
+    ...whereCondition.where,
+     genreId: In(genresArr)
+     };
+  }
+
+   if (price && typeof price === "string") {
+   const priceRange = price.split("-");
+   whereCondition.where = {
+   ...whereCondition.where,
+   price: Between(Number(priceRange[0]), Number(priceRange[1]))
+   };
+   }
+   
+   switch (sort) {
+   case "author":
+    orderCondition = {
+       "author.name": "ASC"
+      };
+   break;
+   case "name":
+   orderCondition.title = "ASC";
+   break;
+  //         case "rating":
+  //           orderCondition.rating = "DESC";
+  //           break;
+   default:
+   orderCondition.price = "ASC";
+   break;
+   }
+
+   whereCondition.order = orderCondition;
+
+   books = await bookRepository.find(whereCondition);
+
+   if (books.length === 0) {
+   throw new CustomError("Books are not found", 404);
+   }
       res.json(books);
     } catch (err) {
       next(err);
     }
   };
-
 
   static getOneBook = async (
     req: Request,
@@ -55,13 +90,13 @@ class BookController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const id:number = Number(req.params.id);
+      const id: number = Number(req.params.id);
       if (!id) {
         throw new CustomError("Id of books is not correct", 400);
       }
       const book: Book[] = await bookRepository.find({
         where: { id },
-        relations:{author:true}
+        relations: { author: true }
       });
       if (!book) {
         throw new CustomError("Book is not found", 404);
@@ -73,19 +108,19 @@ class BookController {
   };
 
   static updateBook = async (req: Request, res: Response, next: NextFunction
-    ): Promise<void>  => {
+  ): Promise<void> => {
     try {
-      const id:number = Number(req.params.id);
+      const id: number = Number(req.params.id);
       if (!id) {
         throw new CustomError("User id is not correct", 400);
       }
-      const results = await bookRepository.update(id, {
+      await bookRepository.update(id, {
         rating: req.body.rating
       });
 
       const book: Book = await bookRepository.findOne({
-        where: {id: Number(req.params.id)},
-        relations:{author:true}
+        where: { id: Number(req.params.id) },
+        relations: { author: true }
       });
       if (!book) {
         throw new CustomError("User is not found", 404);
@@ -98,4 +133,4 @@ class BookController {
   }
 }
 
-  export default BookController;
+export default BookController;
