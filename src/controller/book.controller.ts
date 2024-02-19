@@ -6,9 +6,6 @@ import { Between, In, OrderByCondition} from "typeorm";
 
 const bookRepository = AppDataSource.getRepository(Book);
 
-// type IdType = {
-// genreId: number;
-// }
   class BookController {
     static getBooks = async (
       req: Request,
@@ -19,9 +16,9 @@ const bookRepository = AppDataSource.getRepository(Book);
         let { genre, price, sort, limit, page } = req.query;
         const pageNum = typeof page === "string" ? parseInt(page) : 1;
         const limitNum = typeof limit === "string" ? parseInt(limit) : 3;
-  
+
         const offset = (pageNum - 1) * limitNum;
-  
+
         let books: Book[] = [];
         let orderCondition: OrderByCondition = {};
         let whereCondition: any = {
@@ -35,7 +32,7 @@ const bookRepository = AppDataSource.getRepository(Book);
             }
           }
         };
-  
+
         if (genre && typeof genre === 'string') {
           const genresArr: number[] = genre.split('-').map((item) => Number(item));
           whereCondition.where = {
