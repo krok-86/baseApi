@@ -12,9 +12,9 @@ AppDataSource.initialize()
   .then(async () => {
 
 //     const book = new Book
-// book.title = "sd ds gf fd h aid g  g"
+// book.title = "sd ds g f fd h aid g  g"
 // book.description = "A thrilling detective story about a missing necklace"
-// book.picture = "mystery-necklace.jpg"
+// book.picture = "5.png"
 // book.rating  = 3
 // book.price = 220
 // book.dateOfIssue = null
@@ -54,12 +54,7 @@ AppDataSource.initialize()
     );
 
     app.listen({ port: 3003 }, async () => {
-      console.log("Server up on http://localhost:3003");
-      // try {
-      //   console.log("Database Connected!");
-      // } catch (err) {
-      //   console.error(">>>>>Unable to connect to the database:", err);
-      // }
+      console.log("Server up on http://localhost:3003");      
     });
   })
   .catch((error) => console.log(error));

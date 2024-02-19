@@ -10,79 +10,86 @@ const bookRepository = AppDataSource.getRepository(Book);
 // genreId: number;
 // }
   class BookController {
-   static getBooks = async (
-   req: Request,
-   res: Response,
-   next: NextFunction
-   ): Promise<void> => {
-   try {
-   let { genre, price, sort, limit, page } = req.query;
-   const pageNum = typeof page === "string" ? parseInt(page) : 1;
-   const limitNum = typeof limit === "string" ? parseInt(limit) : 9;
-
-   const offset = (pageNum - 1) * limitNum;
-
-   let books: Book[] = [];
-   let orderCondition: OrderByCondition = {};
-
-   let whereCondition: any = {
-    relations: ["genre"],
-    skip: offset,
-    take: limitNum,
-    join: {
-      alias: "book",
-      innerJoinAndSelect: {
-      author: "book.author",
-      //       rating: "book.rating"
+    static getBooks = async (
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ): Promise<void> => {
+      try {
+        let { genre, price, sort, limit, page } = req.query;
+        const pageNum = typeof page === "string" ? parseInt(page) : 1;
+        const limitNum = typeof limit === "string" ? parseInt(limit) : 3;
+  
+        const offset = (pageNum - 1) * limitNum;
+  
+        let books: Book[] = [];
+        let orderCondition: OrderByCondition = {};
+        let whereCondition: any = {
+          relations: ["genre"],
+          skip: offset,
+          take: limitNum,
+          join: {
+            alias: "book",
+            innerJoinAndSelect: {
+              author: "book.author",
+            }
+          }
+        };
+  
+        if (genre && typeof genre === 'string') {
+          const genresArr: number[] = genre.split('-').map((item) => Number(item));
+          whereCondition.where = {
+            ...whereCondition.where,
+            genreId: In(genresArr)
+          };
+        }
+  
+        if (price && typeof price === "string") {
+          const priceRange = price.split("-");
+          whereCondition.where = {
+            ...whereCondition.where,
+            price: Between(Number(priceRange[0]), Number(priceRange[1]))
+          };
+        }
+  
+        switch (sort) {
+          case "author":
+            orderCondition = {
+              "author.name": "ASC"
+            };
+            break;
+          case "name":
+            orderCondition.title = "ASC";
+            break;
+          default:
+            orderCondition.price = "ASC";
+            break;
+        }
+  
+        whereCondition.order = orderCondition;
+  
+        const totalCount = await bookRepository.count(whereCondition);
+        const maxPage = Math.ceil(totalCount / limitNum);
+  
+        books = await bookRepository.find(whereCondition);
+  
+        if (books.length === 0) {
+          throw new CustomError("Books are not found", 404);
+        }
+  
+        res.json({
+          data: books,
+          pagination: {
+            currentPage: pageNum,
+            totalItems: totalCount,
+            perPage: limitNum,
+            maxPage: maxPage
+          }
+        });
+      } catch (err) {
+        next(err);
       }
-     }
-   };
-
-   if (genre && typeof genre === 'string' ) {
-    const genresArr: number[] = genre.split('-').map((item) => Number(item));
-    whereCondition.where = {
-    ...whereCondition.where,
-     genreId: In(genresArr)
-     };
-  }
-
-   if (price && typeof price === "string") {
-   const priceRange = price.split("-");
-   whereCondition.where = {
-   ...whereCondition.where,
-   price: Between(Number(priceRange[0]), Number(priceRange[1]))
-   };
-   }
-   
-   switch (sort) {
-   case "author":
-    orderCondition = {
-       "author.name": "ASC"
-      };
-   break;
-   case "name":
-   orderCondition.title = "ASC";
-   break;
-  //         case "rating":
-  //           orderCondition.rating = "DESC";
-  //           break;
-   default:
-   orderCondition.price = "ASC";
-   break;
-   }
-
-   whereCondition.order = orderCondition;
-
-   books = await bookRepository.find(whereCondition);
-
-   if (books.length === 0) {
-   throw new CustomError("Books are not found", 404);
-   }
-      res.json(books);
-    } catch (err) {
-      next(err);
-    }
-  };
+    };
 
   static getOneBook = async (
     req: Request,
