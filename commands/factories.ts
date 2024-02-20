@@ -1,6 +1,10 @@
 import AppDataSource from "../src/data-source";
+import { Author } from "../src/entity/Author.entity";
 import { Book } from "../src/entity/Book.entity";
 import { faker } from '@faker-js/faker';
+import { Genre } from "../src/entity/Genre.entity";
+import { Rating } from "../src/entity/Rating.entyty";
+import { User } from "../src/entity/User.entity";
 AppDataSource.initialize()
   .then(async () => {
 
@@ -18,7 +22,35 @@ book.genreId = faker.datatype.number({min:1, max:3})
 await AppDataSource.manager.save(book)
  }
 console.log("Books has been saved. Book id is")
- process.exit();
+//  process.exit();
+
+ for(let i = 0; i < 3; i++){
+  const author= new Author
+author.name = faker.lorem.words(2),
+await AppDataSource.manager.save(author)
+}
+console.log("Authors has been saved.")
+
+for(let i = 0; i < 3; i++){
+  const genre= new Genre
+genre.title = faker.lorem.words(1),
+await AppDataSource.manager.save(genre)}
+console.log("Genres has been saved.")
+
+for(let i = 0; i < 3; i++){
+  const rating= new Rating
+  rating.bookId =  faker.datatype.number({min:1, max:20}),
+  rating.userId =  faker.datatype.number({min:1, max:20})
+await AppDataSource.manager.save(rating)}
+console.log("Ratings has been saved.")
+
+for(let i = 0; i < 3; i++){
+  const user= new User
+  user.fullName =  faker.lorem.words(2),
+  user.email
+ 
+await AppDataSource.manager.save(user)}
+console.log("Uers has been saved.")
 })
 
 // import { define } from "typeorm-seeding";

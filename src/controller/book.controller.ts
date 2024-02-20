@@ -15,7 +15,7 @@ const bookRepository = AppDataSource.getRepository(Book);
       try {
         let { genre, price, sort, limit, page } = req.query;
         const pageNum = typeof page === "string" ? parseInt(page) : 1;
-        const limitNum = typeof limit === "string" ? parseInt(limit) : 3;
+        const limitNum = typeof limit === "string" ? parseInt(limit) : 1;
 
         const offset = (pageNum - 1) * limitNum;
 
