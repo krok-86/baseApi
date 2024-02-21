@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import AppDataSource from "../data-source";
 import { CustomError } from "../error";
 import { Book } from "../entity/Book.entity";
-import { Between, In, OrderByCondition} from "typeorm";
+import { Between, FindManyOptions, FindOptionsOrder, In, OrderByCondition} from "typeorm";
 
 const bookRepository = AppDataSource.getRepository(Book);
 
@@ -19,10 +19,14 @@ const bookRepository = AppDataSource.getRepository(Book);
 
         const offset = (pageNum - 1) * limitNum;
 
-        let books: Book[] = [];
-        let orderCondition: OrderByCondition = {};
-        let whereCondition: any = {
-          relations: ["genre"],
+        console.log("pageNum",pageNum)
+        console.log("limitNum",limitNum)
+        console.log("offset",offset)
+
+
+
+        let whereCondition: FindManyOptions<Book> = {
+          relations: ["genre", "author"],
           skip: offset,
           take: limitNum,
           join: {
@@ -30,7 +34,7 @@ const bookRepository = AppDataSource.getRepository(Book);
             innerJoinAndSelect: {
               author: "book.author",
             }
-          }
+          },
         };
 
         if (genre && typeof genre === 'string') {
@@ -48,32 +52,36 @@ const bookRepository = AppDataSource.getRepository(Book);
             price: Between(Number(priceRange[0]), Number(priceRange[1]))
           };
         }
+
+        let orderCondition: FindOptionsOrder<Book> = {};
+        // let orderCondition: OrderByCondition = {};
+
   
         switch (sort) {
           case "author":
-            orderCondition = {
-              "author.name": "ASC"
-            };
+            // orderCondition = {author: {name: "DESC"}}
+              
+              orderCondition = { "author": { name: "DESC" }}
             break;
           case "name":
-            orderCondition.title = "ASC";
+            orderCondition = { title: "ASC" };
             break;
           default:
-            orderCondition.price = "ASC";
+            orderCondition = { price: "ASC" };
             break;
         }
-  
+
         whereCondition.order = orderCondition;
-  
-        const totalCount = await bookRepository.count(whereCondition);
+
+        // const totalCount = await bookRepository.count(whereCondition);
+        // books = await bookRepository.find(whereCondition);
+        // const findAndCounted = await bookRepository.findAndCount(whereCondition);
+        const [books, totalCount]  = await bookRepository.findAndCount(whereCondition);
+
         const maxPage = Math.ceil(totalCount / limitNum);
-  
-        books = await bookRepository.find(whereCondition);
-  
-        if (books.length === 0) {
+        if (books.length === 0) {//fix?
           throw new CustomError("Books are not found", 404);
         }
-  
         res.json({
           data: books,
           pagination: {
@@ -98,7 +106,7 @@ const bookRepository = AppDataSource.getRepository(Book);
       if (!id) {
         throw new CustomError("Id of books is not correct", 400);
       }
-      const book: Book[] = await bookRepository.find({
+      const book = await bookRepository.findOne({
         where: { id },
         relations: { author: true }
       });
@@ -116,7 +124,7 @@ const bookRepository = AppDataSource.getRepository(Book);
     try {
       const id: number = Number(req.params.id);
       if (!id) {
-        throw new CustomError("User id is not correct", 400);
+        throw new CustomError("Book id is not correct", 400);
       }
       await bookRepository.update(id, {
         rating: req.body.rating
