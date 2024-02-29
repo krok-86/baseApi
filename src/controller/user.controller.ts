@@ -23,6 +23,7 @@ class UserController {
       avatarImg: req.body.avatarImg || "",
       cart: new Cart|| null,//fix?
       ratings: [] || null,//fix?
+      posts: [] || null,
     };
     try {
       const userWithEmail: User | undefined = await userRepository.findOne({

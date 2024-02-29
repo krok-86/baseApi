@@ -9,6 +9,7 @@ import {
 import { Rating } from "./Rating.entyty";
 import { Author } from "./Author.entity";
 import { Genre } from "./Genre.entity";
+import { Post } from "./Post.entity";
 
 @Entity()
 export class Book {
@@ -41,6 +42,9 @@ export class Book {
 
   @OneToMany(() => Rating, (rating) => rating.books)
   ratings: Rating[];
+
+  @OneToMany(() => Post, (post) => post.books)
+  posts: Post[];
 
   @ManyToOne(() => Genre, (genre) => genre.books)
   genre: Genre[];

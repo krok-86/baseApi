@@ -60,7 +60,7 @@ const bookRepository = AppDataSource.getRepository(Book);
         switch (sort) {
           case "author":
             // orderCondition = {author: {name: "DESC"}}
-              
+
               orderCondition = { "author": { name: "DESC" }}
             break;
           case "name":

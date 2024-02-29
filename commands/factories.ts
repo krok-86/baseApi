@@ -5,6 +5,7 @@ import { faker } from "@faker-js/faker";
 import { Genre } from "../src/entity/Genre.entity";
 import { Rating } from "../src/entity/Rating.entyty";
 import { User } from "../src/entity/User.entity";
+import { Post } from "../src/entity/Post.entity";
 AppDataSource.initialize().then(async () => {
     for (let i = 0; i < 10; i++) {
     const author = new Author();
@@ -29,7 +30,7 @@ AppDataSource.initialize().then(async () => {
       (user.avatarImg = "");
     await AppDataSource.manager.save(user);
   }
-  console.log("Uers has been saved.");
+  console.log("Users has been saved.");
 
   for (let i = 0; i < 36; i++) {
     const book = new Book();
@@ -44,6 +45,16 @@ AppDataSource.initialize().then(async () => {
     await AppDataSource.manager.save(book);
   }
   console.log("Books has been saved. Book id is");
+
+  for (let i = 0; i < 12; i++) {
+    const post = new Post();
+    (post.postText = faker.lorem.words(40));
+    // post.created_at = faker.date.birthdate()
+    (post.bookId = faker.datatype.number({ min: 1, max: 20 }));
+    (post.userId = faker.datatype.number({ min: 1, max: 20 }));
+    await AppDataSource.manager.save(post);
+  }
+  console.log("Ratings has been saved.");
 
   for (let i = 0; i < 12; i++) {
     const rating = new Rating();

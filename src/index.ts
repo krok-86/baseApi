@@ -7,6 +7,7 @@ import userRoutes from "./routes/user.routes";
 import { Book } from "./entity/Book.entity";
 import bookRoutes from "./routes/book.routes";
 import genreRoutes from "./routes/genre.routes";
+import postRoutes from "./routes/post.routes";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -33,6 +34,7 @@ AppDataSource.initialize()
 
     app.use("/users", cors(), userRoutes);
     app.use("/books", cors(), bookRoutes);
+    app.use("/posts", cors(), postRoutes);
     app.use("/genres", cors(), genreRoutes);
     app.use(express.static("uploads"));
 
@@ -54,7 +56,7 @@ AppDataSource.initialize()
     );
 
     app.listen({ port: 3003 }, async () => {
-      console.log("Server up on http://localhost:3003");      
+      console.log("Server up on http://localhost:3003");
     });
   })
   .catch((error) => console.log(error));
