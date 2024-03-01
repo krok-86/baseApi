@@ -7,8 +7,8 @@ const router = Router();
 //get Posts
 
 router.post("/", PostController.createPost);//checkAuth
-// router.get("/", BookController.getPosts);
-// router.get("/:id", BookController.getOnePost);
+router.get("/", PostController.getPosts);
+router.get("/:id", PostController.getOnePost);
 // router.put("/:id", BookController.createPost);
 
 export default router;

@@ -4,7 +4,6 @@ import AppDataSource from "../data-source";
 import { User } from "../entity/User.entity";
 import { Book } from "./../entity/Book.entity";
 import { Post } from "../entity/Post.entity";
-import { Repository } from "typeorm";
 
 const postRepository = AppDataSource.getRepository(Post);
 const userRepository = AppDataSource.getRepository(User);
@@ -16,7 +15,7 @@ class PostController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    console.log(req.body);
+    console.log(">>>>>>",req.body);
     try {
       const { userId, bookId, postText } = req.body;
       if (!postText || !postText.length) {
@@ -29,24 +28,63 @@ class PostController {
       if (!user) {
         throw new CustomError("UserId was not created", 404);
       }
-      const post = await postRepository.save({
-        post: postText,
-        userId: user.id,
-      });
-      if (!post) {
-        throw new CustomError("Post was not created", 404);
-      }
       const book = await bookRepository.findOne({ where: { id: +bookId } });
       if (!book) {
         throw new CustomError("BookId was not created", 404);
       }
-
+      const post = await postRepository.save({
+        bookId: book.id,
+        postText: postText,
+        userId: user.id
+      });
+      if (!post) {
+        throw new CustomError("Post was not created", 404);
+      }
       //   const book = await bookRepository.findOne(req.body.bookId);
       //   if (!book) {
       //    throw new CustomError("Topic is not found", 404);
       //  }
       //   await post.addBook(book);
       await postRepository.save(post);
+      res.json(post);
+    } catch (err) {
+      next(err);
+    }
+  };
+  static getPosts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    console.log(">>>>>>",req.body);
+    try {
+      const posts: Post[] = await postRepository.find({relations:{book:true, user:true}});
+      if (!posts) {
+        throw new CustomError("Posts are not found", 404);
+      }
+      res.json(posts);
+    } catch (err) {
+      next(err);
+    }
+  };
+  static getOnePost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    console.log(">>>>>>",req.body);
+    try {
+      const id:number = +req.params.id;
+      if (!id) {
+        throw new CustomError("Id of posts is not correct", 400);
+      }
+      const post: Post[] = await postRepository.find({
+        where: { id },
+        relations:{book:true, user:true}
+      });
+      if (!post) {
+        throw new CustomError("Post are not found", 404);
+      }
       res.json(post);
     } catch (err) {
       next(err);

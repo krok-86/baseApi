@@ -43,7 +43,7 @@ export class Book {
   @OneToMany(() => Rating, (rating) => rating.books)
   ratings: Rating[];
 
-  @OneToMany(() => Post, (post) => post.books)
+  @OneToMany(() => Post, (post) => post.book)
   posts: Post[];
 
   @ManyToOne(() => Genre, (genre) => genre.books)

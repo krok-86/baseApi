@@ -8,22 +8,22 @@ export class Post {//rating
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({ type: "text", nullable: true })
     postText: string;
 
     @CreateDateColumn({ type: "date", nullable: true })
     created_at: Date; // Creation date
 
-    @Column()
+    @Column({nullable: true })
     userId: number
 
-    @Column()
+    @Column({nullable: true })
     bookId: number
 
     @ManyToOne(() => User, (user) => user.posts)
     user: User
 
     @ManyToOne(() => Book, (book) => book.posts)
-    books: Book
+    book: Book
 }
 

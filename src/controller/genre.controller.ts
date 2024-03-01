@@ -28,7 +28,7 @@ class GenreController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const id:number = Number(req.params.id);
+      const id:number = +req.params.id;
       if (!id) {
         throw new CustomError("Id of genres is not correct", 400);
       }
