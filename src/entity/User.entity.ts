@@ -44,7 +44,7 @@ export class User {
     cart: Cart;
 
   @OneToMany(() => Rating, (rating) => rating.user)
-    ratings: Rating[];
+    rating: Rating[];
 
   @OneToMany(() => Post, (post) => post.user)
     posts: Post[];

@@ -15,9 +15,12 @@ export class Rating {
     @Column()
     bookId: number
 
-    @ManyToOne(() => User, (user) => user.ratings)//photo
+    @Column()
+    ratingStar: number
+
+    @ManyToOne(() => User, (user) => user.rating)//photo
     user: User
 
     @ManyToOne(() => Book, (book) => book.rating)
     books: Book
-}
+  }

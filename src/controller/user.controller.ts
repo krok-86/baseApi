@@ -22,7 +22,7 @@ class UserController {
       id: Number(),
       avatarImg: req.body.avatarImg || "",
       cart: new Cart|| null,//fix?
-      ratings: [] || null,//fix?
+      rating: [] || null,//fix?
       posts: [] || null,
     };
     try {

@@ -60,6 +60,7 @@ AppDataSource.initialize().then(async () => {
     const rating = new Rating();
     (rating.bookId = faker.datatype.number({ min: 1, max: 20 }));
       (rating.userId = faker.datatype.number({ min: 1, max: 20 }));
+      (rating.ratingStar = faker.datatype.number({ min: 0, max: 5 }));
     await AppDataSource.manager.save(rating);
   }
   console.log("Ratings has been saved.");

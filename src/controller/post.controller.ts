@@ -46,7 +46,8 @@ class PostController {
       //  }
       //   await post.addBook(book);
       await postRepository.save(post);
-      res.json(post);
+      const postValue = { ... post, author: user} 
+      res.json(postValue);
     } catch (err) {
       next(err);
     }
@@ -56,9 +57,11 @@ class PostController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    console.log(">>>>>>",req.body);
     try {
-      const posts: Post[] = await postRepository.find({relations:{book:true, user:true}});
+      const posts: Post[] = await postRepository.find({
+        where: { bookId: +req.params.bookId },
+        relations:{book:true, user:true},
+      });
       if (!posts) {
         throw new CustomError("Posts are not found", 404);
       }
