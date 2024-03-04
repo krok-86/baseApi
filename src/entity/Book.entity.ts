@@ -32,7 +32,7 @@ export class Book {
   price: number;
 
   @CreateDateColumn({ type: "date", nullable: true })
-  dateOfIssue: Date;
+    dateOfIssue: Date;
 
   @Column({ nullable: true })
   authorId: number;

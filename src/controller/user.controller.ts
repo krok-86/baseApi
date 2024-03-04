@@ -174,12 +174,6 @@ class UserController {
       if (!id) {
         throw new CustomError("User id is not correct", 400);
       }
-      // const user: User = await userRepository.findOneBy({
-      //   id: req.params.id,
-      // });
-      // if (!user) {
-      //   throw new CustomError("User is not found", 404);
-      // }
 
       if (req.body.email === '') {
         throw new CustomError("Email field have to be filled", 400);
@@ -189,10 +183,6 @@ class UserController {
       const userWithEmail: User = await userRepository.findOneBy({
         email: req.body.email,
       });
-
-      // if(userWithEmail && (userWithEmail.id !== user.id)) {
-      //     throw new CustomError("This email has arleady been registered", 400);
-      // }
     }
 
       if (req.body.password) {
@@ -201,7 +191,6 @@ class UserController {
         req.body.password = hash;
       }
 
-      // userRepository.merge(user, req.body);
       const results = await userRepository.update(id, {
         fullName: req.body.fullName,
         email: req.body.email,

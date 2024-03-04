@@ -39,7 +39,7 @@ AppDataSource.initialize().then(async () => {
     (book.picture = "1.png"); //faker.image.avatar(),
     book.rating = faker.datatype.number({ min: 1.0, max: 5.0 });
     book.price = faker.datatype.number({ min: 10, max: 1000 });
-    book.dateOfIssue = null; //faker.date.birthdate()
+    //book.dateOfIssue = null; //faker.date.birthdate()
     book.authorId = faker.datatype.number({ min: 1, max: 3 });
     book.genreId = faker.datatype.number({ min: 1, max: 3 });
     await AppDataSource.manager.save(book);
@@ -54,7 +54,7 @@ AppDataSource.initialize().then(async () => {
     (post.userId = faker.datatype.number({ min: 1, max: 20 }));
     await AppDataSource.manager.save(post);
   }
-  console.log("Ratings has been saved.");
+  console.log("Posts has been saved.");
 
   for (let i = 0; i < 12; i++) {
     const rating = new Rating();

@@ -144,7 +144,7 @@ class BookController {
       }
 
       await ratingRepository.save(rating);
-      
+
       const ratingsOneBook = await ratingRepository.find({ where: { userId, bookId } });
       if(!ratingsOneBook.length){
         throw new CustomError("Rating is not found", 404);

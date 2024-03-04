@@ -15,7 +15,6 @@ class PostController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    console.log(">>>>>>",req.body);
     try {
       const { userId, bookId, postText } = req.body;
       if (!postText || !postText.length) {
@@ -40,11 +39,6 @@ class PostController {
       if (!post) {
         throw new CustomError("Post was not created", 404);
       }
-      //   const book = await bookRepository.findOne(req.body.bookId);
-      //   if (!book) {
-      //    throw new CustomError("Topic is not found", 404);
-      //  }
-      //   await post.addBook(book);
       await postRepository.save(post);
       const postValue = { ... post, author: user} 
       res.json(postValue);
