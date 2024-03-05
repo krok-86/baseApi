@@ -6,8 +6,9 @@ const router = Router();
 
 //get book
 
-router.get("/", BookController.getBooks);
+router.get("/recommended", BookController.getRecommendedBook);
 router.get("/:id", BookController.getOneBook);
 router.put("/:id",checkAuth, BookController.updateBook);
+router.get("/", BookController.getBooks);
 
-export default router;
+export default router; 

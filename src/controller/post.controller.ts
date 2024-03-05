@@ -40,7 +40,7 @@ class PostController {
         throw new CustomError("Post was not created", 404);
       }
       await postRepository.save(post);
-      const postValue = { ... post, author: user} 
+      const postValue = { ... post, user} 
       res.json(postValue);
     } catch (err) {
       next(err);

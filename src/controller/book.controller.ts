@@ -38,7 +38,7 @@ class BookController {
       };
 
       if (genre && typeof genre === 'string') {
-        const genresArr: number[] = genre.split('-').map((item) => Number(item));
+        const genresArr: number[] = genre.split(',').map((item) => Number(item));
         whereCondition.where = {
           ...whereCondition.where,
           genreId: In(genresArr)
@@ -170,6 +170,24 @@ class BookController {
       next(err);
     }
   }
+  static getRecommendedBook = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {      
+     let books = await bookRepository.find({
+        where: { rating: 5 },
+        relations: { author: true }
+      });
+      if (books?.length > 4) {
+        books.length = 4;
+      }
+      res.json(books);
+    } catch (err) {
+      next(err);
+    }
+  };
 }
 
 export default BookController;
