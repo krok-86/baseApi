@@ -11,7 +11,7 @@ export class Post {//rating
     @Column({ type: "text", nullable: true })
     postText: string;
 
-    @CreateDateColumn({ type: "date", nullable: true })
+    @CreateDateColumn({ type: "timestamptz", nullable: true })
     created_at: Date; // Creation date
 
     @Column({nullable: true })

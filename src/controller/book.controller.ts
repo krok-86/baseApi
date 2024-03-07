@@ -8,6 +8,21 @@ import { Rating } from "../entity/Rating.entyty";
 const bookRepository = AppDataSource.getRepository(Book);
 const ratingRepository = AppDataSource.getRepository(Rating);
 
+interface IBook {
+  id?: number;
+  title?: string;
+  description?: string;
+  picture?: string;
+  rating?: number;
+  price?: number;
+  dateOfIssue?: Date;
+  userId?: number;
+  author?: {
+    id?: number;
+    name?: string;
+  };
+  genreId?: number;
+}
 class BookController {
   static getBooks = async (
     req: Request,
@@ -18,13 +33,7 @@ class BookController {
       let { genre, price, sort, limit, page } = req.query;
       const pageNum = typeof page === "string" ? parseInt(page) : 1;
       const limitNum = typeof limit === "string" ? parseInt(limit) : 12;
-
       const offset = (pageNum - 1) * limitNum;
-
-      // console.log("pageNum",pageNum)
-      // console.log("limitNum",limitNum)
-      // console.log("offset",offset)
-
       let whereCondition: FindManyOptions<Book> = {
         relations: ["genre", "author"],
         skip: offset,
@@ -38,7 +47,7 @@ class BookController {
       };
 
       if (genre && typeof genre === 'string') {
-        const genresArr: number[] = genre.split(',').map((item) => Number(item));
+        const genresArr: number[] = genre.split('-').map((item) => Number(item));
         whereCondition.where = {
           ...whereCondition.where,
           genreId: In(genresArr)
@@ -54,12 +63,9 @@ class BookController {
       }
 
       let orderCondition: FindOptionsOrder<Book> = {};
-      // let orderCondition: OrderByCondition = {};
-
 
       switch (sort) {
         case "author":
-          // orderCondition = {author: {name: "DESC"}}
 
           orderCondition = { "author": { name: "DESC" } }
           break;
@@ -73,9 +79,6 @@ class BookController {
 
       whereCondition.order = orderCondition;
 
-      // const totalCount = await bookRepository.count(whereCondition);
-      // books = await bookRepository.find(whereCondition);
-      // const findAndCounted = await bookRepository.findAndCount(whereCondition);
       const [books, totalCount] = await bookRepository.findAndCount(whereCondition);
 
       const maxPage = Math.ceil(totalCount / limitNum);
@@ -145,7 +148,7 @@ class BookController {
 
       await ratingRepository.save(rating);
 
-      const ratingsOneBook = await ratingRepository.find({ where: { userId, bookId } });
+      const ratingsOneBook = await ratingRepository.find({ where: { bookId } });
       if(!ratingsOneBook.length){
         throw new CustomError("Rating is not found", 404);
       }
@@ -175,19 +178,46 @@ class BookController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    try {      
-     let books = await bookRepository.find({
-        where: { rating: 5 },
-        relations: { author: true }
-      });
-      if (books?.length > 4) {
-        books.length = 4;
+    try {
+      let books = await bookRepository
+        .createQueryBuilder("book")
+        .leftJoinAndSelect("book.author", "author")
+        .where("book.rating = :rating", { rating: 5 })
+        .orderBy("random()")
+        .getMany();
+
+      if (books.length > 4) {
+        books = books.slice(0, 4);
       }
+      //@ts-ignore
+      const randomBook: Book = {
+        id: Math.floor(Math.random() * 1000),
+      };
+      books.push(randomBook);
       res.json(books);
     } catch (err) {
       next(err);
     }
   };
+
+  // static getRecommendedBook = async (
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<void> => {
+  //   try {
+  //    let books = await bookRepository.find({
+  //       where: { rating: 5 },
+  //       relations: { author: true }
+  //     });
+  //     if (books?.length > 4) {
+  //       books.length = 4;
+  //     }
+  //     res.json(books);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // };
 }
 
 export default BookController;

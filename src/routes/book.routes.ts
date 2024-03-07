@@ -7,6 +7,7 @@ const router = Router();
 //get book
 
 router.get("/recommended", BookController.getRecommendedBook);
+// router.get("/recommended", BookController.getRecommendedBook5Star);
 router.get("/:id", BookController.getOneBook);
 router.put("/:id",checkAuth, BookController.updateBook);
 router.get("/", BookController.getBooks);
