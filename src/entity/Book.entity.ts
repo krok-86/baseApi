@@ -10,6 +10,7 @@ import { Rating } from "./Rating.entyty";
 import { Author } from "./Author.entity";
 import { Genre } from "./Genre.entity";
 import { Post } from "./Post.entity";
+import { Favorite } from "./Favorite.entity";
 
 @Entity()
 export class Book {
@@ -40,7 +41,7 @@ export class Book {
   @Column({ nullable: true })
   genreId: number;
 
-  @OneToMany(() => Rating, (rating) => rating.books)
+  @OneToMany(() => Rating, (rating) => rating.book)
   ratings: Rating[];
 
   @OneToMany(() => Post, (post) => post.book)
@@ -51,4 +52,7 @@ export class Book {
 
   @ManyToOne(() => Author, (author) => author.books)
   author: Author;
+
+  @ManyToOne(() => Favorite, (favorite) => favorite.books)
+  favorite: Favorite;
 }

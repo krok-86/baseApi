@@ -7,16 +7,10 @@ export class CartBook {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
-    cartId: number
-
-    @Column()
-    bookId: number
-
     @OneToOne(() => Book)
     @JoinColumn()
-    book: Book
+    Book: Book
 
-    @ManyToOne(() => Cart, (cart) => cart.cartBooks)//photo
+    @ManyToOne(() => Cart, (cart) => cart.cartBooks)
     cart: Cart
 }

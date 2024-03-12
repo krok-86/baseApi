@@ -93,6 +93,7 @@ class UserController {
       next(err);
     }
   };
+
   static authorizationMeUser = async (
     req: Request,
     res: Response,
@@ -112,6 +113,7 @@ class UserController {
       next(err);
     }
   };
+
   static getUser = async (
     req: Request,
     res: Response,

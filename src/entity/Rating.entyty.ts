@@ -1,5 +1,5 @@
 
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
 import { User } from "./User.entity"
 import { Book } from "./Book.entity"
 
@@ -22,5 +22,5 @@ export class Rating {
     user: User
 
     @ManyToOne(() => Book, (book) => book.rating)
-    books: Book
+    book: Book
   }
