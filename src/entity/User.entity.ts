@@ -8,7 +8,7 @@ import {
   OneToOne,
 } from "typeorm";
 import { Rating } from "./Rating.entyty";
-import { Cart } from "./Cart.entity";
+// import { Cart } from "./Cart.entity";
 import { Post } from "./Post.entity";
 
 @Entity()
@@ -38,11 +38,14 @@ export class User {
 
   @Column({ nullable: true })
   avatarImg: string;
+ 
+  @Column("int", { array: true, nullable: true })
+  cart: number[];
 
-  @OneToOne(() => Cart)
-    @JoinColumn()
-    cart: Cart;
+  @Column("int", { array: true, nullable: true })
+  favorite: number[];
 
+  
   @OneToMany(() => Rating, (rating) => rating.user)
     rating: Rating[];
 
