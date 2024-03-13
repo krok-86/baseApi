@@ -8,21 +8,6 @@ import { Rating } from "../entity/Rating.entyty";
 const bookRepository = AppDataSource.getRepository(Book);
 const ratingRepository = AppDataSource.getRepository(Rating);
 
-interface IBook {
-  id?: number;
-  title?: string;
-  description?: string;
-  picture?: string;
-  rating?: number;
-  price?: number;
-  dateOfIssue?: Date;
-  userId?: number;
-  author?: {
-    id?: number;
-    name?: string;
-  };
-  genreId?: number;
-}
 class BookController {
   static getBooks = async (
     req: Request,
@@ -199,25 +184,6 @@ class BookController {
       next(err);
     }
   };
-
-  // static getRecommendedBook = async (
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ): Promise<void> => {
-  //   try {
-  //    let books = await bookRepository.find({
-  //       where: { rating: 5 },
-  //       relations: { author: true }
-  //     });
-  //     if (books?.length > 4) {
-  //       books.length = 4;
-  //     }
-  //     res.json(books);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // };
 }
 
 export default BookController;

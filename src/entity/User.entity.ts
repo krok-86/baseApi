@@ -6,10 +6,12 @@ import {
   OneToMany,
   JoinColumn,
   OneToOne,
+  JoinTable,
+  ManyToMany,
 } from "typeorm";
 import { Rating } from "./Rating.entyty";
-// import { Cart } from "./Cart.entity";
 import { Post } from "./Post.entity";
+import { Book } from "./Book.entity";
 
 @Entity()
 export class User {
@@ -33,19 +35,22 @@ export class User {
   @CreateDateColumn({ type: "date", nullable: true })
   dob: Date;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Column({ nullable: true })
   avatarImg: string;
- 
+
   @Column("int", { array: true, nullable: true })
   cart: number[];
 
-  @Column("int", { array: true, nullable: true })
-  favorite: number[];
+  // @Column("int", { array: true, nullable: true })
+  // favorite: number[];
 
-  
+  @ManyToMany(() => Book)
+    @JoinTable()
+    favorite: Book[]
+
   @OneToMany(() => Rating, (rating) => rating.user)
     rating: Rating[];
 

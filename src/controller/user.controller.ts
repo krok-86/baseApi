@@ -5,7 +5,6 @@ import { CustomError } from "../error";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { DeleteResult } from "typeorm";
-// import { Cart } from "../entity/Cart.entity";
 
 const userRepository = AppDataSource.getRepository(User);
 class UserController {
@@ -14,16 +13,16 @@ class UserController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const newUser: User = { 
+    const newUser: User = {
       fullName: req.body.fullName || null,
       email: req.body.email,
       dob: req.body.dob || null,
       password: req.body.password,
       id: Number(),
       avatarImg: req.body.avatarImg || "",
-      cart: [],//fix?
+      cart: [],
       favorite: [],
-      rating: null,//fix?
+      rating: null,
       posts: [],
     };
     try {
@@ -65,9 +64,11 @@ class UserController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const user: User | undefined = await userRepository.findOne({
-        where: { email: req.body.email },
-      });
+      const user: User | undefined = await userRepository
+        .createQueryBuilder("user")
+        .addSelect("user.password")
+        .where("user.email = :email", { email: req.body.email })
+        .getOne();
       if (!user) {
         throw new CustomError("User data not found", 404);
       }
@@ -136,7 +137,7 @@ class UserController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const id:number = Number(req.params.id);
+      const id: number = Number(req.params.id);
       if (!id) {
         throw new CustomError("User's id is not correct", 400);
       }
@@ -170,23 +171,26 @@ class UserController {
       next(err);
     }
   };
-  static updateUser = async (req: Request, res: Response, next: NextFunction
-    ): Promise<void>  => {
+  static updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-      const id:number = Number(req.params.id);
+      const id: number = Number(req.params.id);
       if (!id) {
         throw new CustomError("User id is not correct", 400);
       }
 
-      if (req.body.email === '') {
+      if (req.body.email === "") {
         throw new CustomError("Email field have to be filled", 400);
       }
 
       if (req.body.email) {
-      const userWithEmail: User = await userRepository.findOneBy({
-        email: req.body.email,
-      });
-    }
+        const userWithEmail: User = await userRepository.findOneBy({
+          email: req.body.email,
+        });
+      }
 
       if (req.body.password) {
         const salt: string = await bcrypt.genSalt(10);
@@ -202,9 +206,11 @@ class UserController {
         avatarImg: req.file?.filename || req.body.avatarImg,
       });
 
-      const user: User = await userRepository.findOneBy({
-        id: Number(req.params.id),
-      });
+      const user: User | undefined = await userRepository
+        .createQueryBuilder("user")
+        .addSelect("user.password")
+        .where("user.id = :id", { id: req.params.id })
+        .getOne();
       if (!user) {
         throw new CustomError("User is not found", 404);
       }
@@ -213,28 +219,31 @@ class UserController {
     } catch (err) {
       next(err);
     }
-  }
-  static addBookToCart = async (req: Request, res: Response, next: NextFunction
-    ): Promise<void>  => {
-      try {
-      const id:number = Number(req.params.id);
+  };
+  static addBookToCart = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const id: number = Number(req.params.id);
       if (!id) {
-        throw new CustomError(">>>>>>>>>>User id is not correct", 400);//fix        
+        throw new CustomError(">>>>>>>>>>User id is not correct", 400); //fix
       }
       const user: User = await userRepository.findOne({
         where: { id: req.body.userUniqId },
-      });    
+      });
       if (!user) {
         throw new CustomError("User is not found", 404);
       }
-      const result = await userRepository.update( req.body.userUniqId, {
-        
-         cart: user.cart ? [...user.cart, id] : [id]
+      const result = await userRepository.update(req.body.userUniqId, {
+        cart: user.cart ? [...user.cart, id] : [id],
       });
       res.json(result);
     } catch (err) {
       next(err);
     }
-    }
+  };
+
 }
 export default UserController;
