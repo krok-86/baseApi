@@ -285,43 +285,43 @@ class UserController {
       next(err);
     }
   };
-  static removeBookFromFavorite = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const userId: number = req.body.userId; // Получаем идентификатор пользователя
-      const bookId: number = req.body.bookId; // Получаем идентификатор книги
+  // static removeBookFromFavorite = async (
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<void> => {
+  //   try {
+  //     const userId: number = req.body.userId; // Получаем идентификатор пользователя
+  //     const bookId: number = req.body.bookId; // Получаем идентификатор книги
 
-      // Находим пользователя по идентификатору
-      const user: User | undefined = await userRepository.findOne(
-        { where: { id: +userId }, relations: ["favorite"] }
-      );
+  //     // Находим пользователя по идентификатору
+  //     const user: User | undefined = await userRepository.findOne(
+  //       { where: { id: +userId }, relations: ["favorite"] }
+  //     );
 
-      if (!user) {
-        throw new CustomError("User not found", 404);
-      }
+  //     if (!user) {
+  //       throw new CustomError("User not found", 404);
+  //     }
 
-      // Находим индекс книги в массиве favorite пользователя
-      const index: number = user.favorite.findIndex(book => book.id === bookId);
+  //     // Находим индекс книги в массиве favorite пользователя
+  //     const index: number = user.favorite.findIndex(book => book.id === bookId);
 
-      if (index === -1) {
-        throw new CustomError("Book not found in favorites", 404);
-      }
+  //     if (index === -1) {
+  //       throw new CustomError("Book not found in favorites", 404);
+  //     }
 
-      // Удаляем книгу из массива favorite
-      user.favorite.splice(index, 1);
+  //     // Удаляем книгу из массива favorite
+  //     user.favorite.splice(index, 1);
 
-      // Сохраняем изменения
-      await userRepository.save(user);
+  //     // Сохраняем изменения
+  //     await userRepository.save(user);
 
-      res.json({ message: "Book removed from favorites successfully" });
-    } catch (err) {
-      err.message = "Server error: unable to remove book from favorites";
-      err.code = "500";
-      next(err);
-    }
-  };
+  //     res.json({ message: "Book removed from favorites successfully" });
+  //   } catch (err) {
+  //     err.message = "Server error: unable to remove book from favorites";
+  //     err.code = "500";
+  //     next(err);
+  //   }
+  // };
 }
 export default UserController;
