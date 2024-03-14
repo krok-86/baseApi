@@ -26,7 +26,7 @@ class UserController {
       // favorite: [],
       rating: null,
       posts: [],
-      favorite: null
+      favorite: null,
     };
     try {
       const userWithEmail: User | undefined = await userRepository.findOne({
@@ -254,30 +254,30 @@ class UserController {
   ): Promise<void> => {
     try {
       const bookId = req.params.id;
-      // const user = await userRepository.findOne(userId, {
-      //   relations: ["favorite"]
-      // });
-      
-      const user = await userRepository.findOne(
-        {  where: { id: req.body.userUniqId }, relations: ['favorite'] }
-      );     
+      const user = await userRepository.findOne({
+        where: { id: req.body.userUniqId },
+        relations: ["favorite"],
+      });
       if (!user) {
         throw new CustomError("User not found", 404);
       }
-      const bookToAdd = await bookRepository.findOne({ where: { id: +bookId }});
+      const bookToAdd = await bookRepository.findOne({
+        where: { id: +bookId },
+      });
       if (!bookToAdd) {
         throw new CustomError("Book not found", 404);
       }
-      const isBookAlreadyAdded = user.favorite.some(book => book.id === +bookId);
+      const isBookAlreadyAdded = user.favorite.some(
+        (book) => book.id === +bookId
+      );
       if (isBookAlreadyAdded) {
-        // throw new CustomError("Book already in favorites", 400);
-        const test = user.favorite.filter((el) => el.id !== +bookId);
-        user.favorite = test;
+        const dislike = user.favorite.filter((el) => el.id !== +bookId);
+        user.favorite = dislike;
+        throw new CustomError("Book not found in favorite", 404);
       } else {
         user.favorite.push(bookToAdd);
       }
       await userRepository.save(user);
-
       res.json({ message: "Book added to favorites successfully" });
     } catch (err) {
       err.message = "Server error: user was not created";
@@ -285,43 +285,88 @@ class UserController {
       next(err);
     }
   };
-  // static removeBookFromFavorite = async (
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ): Promise<void> => {
-  //   try {
-  //     const userId: number = req.body.userId; // Получаем идентификатор пользователя
-  //     const bookId: number = req.body.bookId; // Получаем идентификатор книги
+  static removeBookFromFavorite = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const userId: number = req.body.userId; // Получаем идентификатор пользователя
+      const bookId: number = req.body.bookId; // Получаем идентификатор книги
 
-  //     // Находим пользователя по идентификатору
-  //     const user: User | undefined = await userRepository.findOne(
-  //       { where: { id: +userId }, relations: ["favorite"] }
-  //     );
+      // Находим пользователя по идентификатору
+      const user: User | undefined = await userRepository.findOne({
+        where: { id: +userId },
+        relations: ["favorite"],
+      });
 
-  //     if (!user) {
-  //       throw new CustomError("User not found", 404);
-  //     }
+      if (!user) {
+        throw new CustomError("User not found", 404);
+      }
 
-  //     // Находим индекс книги в массиве favorite пользователя
-  //     const index: number = user.favorite.findIndex(book => book.id === bookId);
+      // Находим индекс книги в массиве favorite пользователя
+      const index: number = user.favorite.findIndex(
+        (book) => book.id === bookId
+      );
 
-  //     if (index === -1) {
-  //       throw new CustomError("Book not found in favorites", 404);
-  //     }
+      if (index === -1) {
+        throw new CustomError("Book not found in favorites", 404);
+      }
 
-  //     // Удаляем книгу из массива favorite
-  //     user.favorite.splice(index, 1);
+      // Удаляем книгу из массива favorite
+      user.favorite.splice(index, 1);
 
-  //     // Сохраняем изменения
-  //     await userRepository.save(user);
+      // Сохраняем изменения
+      await userRepository.save(user);
 
-  //     res.json({ message: "Book removed from favorites successfully" });
-  //   } catch (err) {
-  //     err.message = "Server error: unable to remove book from favorites";
-  //     err.code = "500";
-  //     next(err);
-  //   }
-  // };
+      res.json({ message: "Book removed from favorites successfully" });
+    } catch (err) {
+      err.message = "Server error: unable to remove book from favorites";
+      err.code = "500";
+      next(err);
+    }
+  };
+  static getBooksFromFavorite = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const userId = req.params.userId;
+      const user = await userRepository.findOne({
+        where: { id: req.body.userUniqId },
+        relations: ["favorite"],
+      });
+      if (!user) {
+        throw new CustomError("User not found", 404);
+      }
+      const favoriteBooks = user.favorite;
+      res.json(favoriteBooks);
+    } catch (err) {
+      next(err);
+    }
+  };
+  static getFavoriteBooks = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const user = await userRepository.findOne({
+        where: { id: req.body.userUniqId },
+        relations: ["favorite"],
+      });
+      if (!user) {
+        throw new CustomError("User not found", 404);
+      }
+      console.log(">>>>>>>>>>>>",user.favorite)
+      console.log("<<<<<>>>>>",user)
+      res.json(user.favorite);
+    } catch (err) {
+      err.message = "Server error: could not get favorite books";
+      err.code = "500";
+      next(err);
+    }
+  };
 }
 export default UserController;
