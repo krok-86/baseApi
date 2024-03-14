@@ -353,7 +353,7 @@ class UserController {
   ): Promise<void> => {
     try {
       const user = await userRepository.findOne({
-        where: { id: req.body.userUniqId },
+        where: { id: +req.body.userUniqId },
         relations: ["favorite"],
       });
       if (!user) {
