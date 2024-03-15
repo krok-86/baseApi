@@ -278,6 +278,7 @@ class UserController {
         user.favorite.push(bookToAdd);
       }
       await userRepository.save(user);
+      console.log('>>>>>',userRepository)
       res.json({ message: "Book added to favorites successfully" });
     } catch (err) {
       err.message = "Server error: user was not created";
@@ -326,26 +327,26 @@ class UserController {
       next(err);
     }
   };
-  static getBooksFromFavorite = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const userId = req.params.userId;
-      const user = await userRepository.findOne({
-        where: { id: req.body.userUniqId },
-        relations: ["favorite"],
-      });
-      if (!user) {
-        throw new CustomError("User not found", 404);
-      }
-      const favoriteBooks = user.favorite;
-      res.json(favoriteBooks);
-    } catch (err) {
-      next(err);
-    }
-  };
+  // static getBooksFromFavorite = async (
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<void> => {
+  //   try {
+  //     const userId = req.params.userId;
+  //     const user = await userRepository.findOne({
+  //       where: { id: req.body.userUniqId },
+  //       relations: ["favorite"],
+  //     });
+  //     if (!user) {
+  //       throw new CustomError("User not found", 404);
+  //     }
+  //     const favoriteBooks = user.favorite;
+  //     res.json(favoriteBooks);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // };
   static getFavoriteBooks = async (
     req: Request,
     res: Response,

@@ -8,7 +8,7 @@ import upload from "../middleware/upload";
 const router = Router();
 //create user
 router.get("/favorite", checkAuth, UserController.getFavoriteBooks);
-router.put("/favorite/:id", checkAuth, UserController.addBookToFavorite);
+router.put("/favorite/:id", UserController.addBookToFavorite);//checkAuth,
 router.delete("/favorite/:id", checkAuth, UserController.removeBookFromFavorite);
 router.put("/cart/:id", checkAuth, UserController.addBookToCart);
 
