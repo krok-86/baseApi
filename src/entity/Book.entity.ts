@@ -52,7 +52,5 @@ export class Book {
 
   @ManyToOne(() => Author, (author) => author.books)
   author: Author;
-
-  // @ManyToOne(() => Favorite, (favorite) => favorite.books)
-  // favorite: Favorite;
+ 
 }
