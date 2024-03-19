@@ -8,6 +8,7 @@ import {
   OneToOne,
   JoinTable,
   ManyToMany,
+  ManyToOne,
 } from "typeorm";
 import { Rating } from "./Rating.entyty";
 import { Post } from "./Post.entity";
@@ -41,11 +42,14 @@ export class User {
   @Column({ nullable: true })
   avatarImg: string;
 
-  @Column("int", { array: true, nullable: true })
-  cart: number[];
+  // @Column("int", { array: true, nullable: true })
+  // cart: number[];//fallback option
 
   // @Column("int", { array: true, nullable: true })
   // favorite: number[];
+
+  @ManyToOne(() => Book, (book) => book.user)
+  books: Book[]
 
   @ManyToMany(() => Book)
     @JoinTable()

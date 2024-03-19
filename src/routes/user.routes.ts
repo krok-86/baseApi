@@ -6,12 +6,12 @@ import { checkAuth } from "../middleware/checkAuth";
 import upload from "../middleware/upload";
 
 const router = Router();
-//create user
+
 router.get("/favorite", checkAuth, UserController.getFavoriteBooks);
 router.put("/favorite/:id", checkAuth, UserController.addBookToFavorite);
 // router.delete("/favorite/:id", checkAuth, UserController.removeBookFromFavorite);
 router.put("/cart/:id", checkAuth, UserController.addBookToCart);
-
+//create user
 router.post("/registration", validation(userSchemaReg), UserController.registrationUser);
 router.post("/authorization", validation(userSchemaAuth), UserController.authorizationUser);
 router.get("/authorization/me", checkAuth, UserController.authorizationMeUser);
