@@ -23,11 +23,12 @@ class UserController {
       id: Number(),
       avatarImg: req.body.avatarImg || "",
       // cart: [],
-      // favorite: [],
-      books: [],
+      // favorite: [],     
       rating: null,
       posts: [],
       favorite: null,
+      
+       cart: null,
     };
     try {
       const userWithEmail: User | undefined = await userRepository.findOne({
@@ -255,34 +256,38 @@ class UserController {
   //     next(err);
   //   }
   // };
-  static addBookToCart = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const bookId = req.params.id;
-      const user = await userRepository.findOne({
-        where: { id: req.body.userUniqId },
-        relations: ["books"],
-      });
-      if (!user) {
-        throw new CustomError("User not found", 404);
-      }
-      const bookToAdd = await bookRepository.findOne({
-        where: { id: +bookId },
-      });
-      if (!bookToAdd) {
-        throw new CustomError("Book not found", 404);
-      }
-      console.log("<<<<<<<<<<<<<<<<<<",user.books)
-      user.books.push(bookToAdd);
-      await userRepository.save(user);
-      res.json(user);
-    } catch (err) {
-      next(err);
-    }
-  };
+  // static addBookToCart = async (
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<void> => {
+  //   try {
+  //     const bookId = req.params.id;
+  //     const user = await userRepository.findOne({
+  //       where: { id: req.body.userUniqId },
+  //       relations: ["books"],
+  //     });
+  //     if (!user) {
+  //       throw new CustomError("User not found", 404);
+  //     }
+  //     const bookToAdd = await bookRepository.findOne({
+  //       where: { id: +bookId },
+  //     });
+  //     if (!bookToAdd) {
+  //       throw new CustomError("Book not found", 404);
+  //     }
+  //     if (!user.books) {
+  //       user.books = []        
+  //     }
+  //     console.log("<<<<<<<<<<<<<<<<<<",user.books)
+  //     user.books.push(bookToAdd);
+  //     console.log("<<<<<<<<<<<<<<<<<<",user)
+  //     await userRepository.save(user);
+  //     res.json(user);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // };
       // const userId: number = Number(req.params.userId);
       // const bookId: number = Number(req.params.bookId);
       // //@ts-ignore
@@ -302,7 +307,63 @@ class UserController {
 
       // await userRepository.save(user);
       // res.json(user);
-   
+      static addBookToCart = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+      ): Promise<void> => {
+        try {
+          const bookId = req.params.id;
+          const user = await userRepository.findOne({
+            where: { id: req.body.userUniqId },
+            relations: ["cart"],
+          });
+          if (!user) {
+            throw new CustomError("User not found", 404);
+          }
+          const bookToAdd = await bookRepository.findOne({
+            where: { id: +bookId },
+          });
+          if (!bookToAdd) {
+            throw new CustomError("Book not found", 404);
+          }
+          const isBookAlreadyAdded = user.cart.some(
+            (book) => book.id === +bookId
+          );
+          if (isBookAlreadyAdded) {
+            const dislike = user.cart.filter((el) => el.id !== +bookId);
+            user.cart = dislike;
+          } else {
+            user.cart.push(bookToAdd);
+          }
+          await userRepository.save(user);
+          res.json(user);
+        } catch (err) {
+          err.message = "Server error: user was not created";
+          err.code = "500";
+          next(err);
+        }
+      };
+       static getCartBooks = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+      ): Promise<void> => {
+        try {
+          const user = await userRepository.findOne({
+            where: { id: +req.body.userUniqId },
+            relations: ["cart", "cart.author"],
+          });
+          if (!user) {
+            throw new CustomError("User not found", 404);
+          }
+          res.json(user.cart);
+        } catch (err) {
+          err.message = "Server error: could not get cart books";
+          err.code = "500";
+          next(err);
+        }
+      };
   static addBookToFavorite = async (
     req: Request,
     res: Response,

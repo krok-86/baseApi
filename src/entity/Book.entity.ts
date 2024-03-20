@@ -10,7 +10,6 @@ import { Rating } from "./Rating.entyty";
 import { Author } from "./Author.entity";
 import { Genre } from "./Genre.entity";
 import { Post } from "./Post.entity";
-import { User } from "./User.entity";
 // import { Favorite } from "./Favorite.entity";
 
 @Entity()
@@ -54,6 +53,4 @@ export class Book {
   @ManyToOne(() => Author, (author) => author.books)
   author: Author;
  
-  @OneToMany(() => User, (user) => user.books)
-  user: User;
 }

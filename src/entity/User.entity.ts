@@ -4,11 +4,8 @@ import {
   Column,
   CreateDateColumn,
   OneToMany,
-  JoinColumn,
-  OneToOne,
   JoinTable,
-  ManyToMany,
-  ManyToOne,
+  ManyToMany,  
 } from "typeorm";
 import { Rating } from "./Rating.entyty";
 import { Post } from "./Post.entity";
@@ -48,8 +45,9 @@ export class User {
   // @Column("int", { array: true, nullable: true })
   // favorite: number[];
 
-  @ManyToOne(() => Book, (book) => book.user)
-  books: Book[]
+  @ManyToMany(() => Book)
+  @JoinTable()
+  cart: Book[]
 
   @ManyToMany(() => Book)
     @JoinTable()
