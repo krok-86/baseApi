@@ -414,6 +414,11 @@ class UserController {
       if (!user) {
         throw new CustomError("User not found", 404);
       }
+      // const [book, count] = await bookRepository.findAndCount ({
+      //   where: { id: book },
+      //   relations: ["favorite.book"]
+      // })
+      // console.log("<><><><><>", [book, count] )
       res.json(user.favorite);
     } catch (err) {
       err.message = "Server error: could not get favorite books";

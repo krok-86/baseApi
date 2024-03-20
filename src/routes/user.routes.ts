@@ -10,6 +10,7 @@ const router = Router();
 router.get("/favorite", checkAuth, UserController.getFavoriteBooks);
 router.put("/favorite/:id", checkAuth, UserController.addBookToFavorite);
 // router.delete("/favorite/:id", checkAuth, UserController.removeBookFromFavorite);
+router.get("/cart", checkAuth, UserController.getCartBooks);
 router.put("/cart/:id", checkAuth, UserController.addBookToCart);
 //create user
 router.post("/registration", validation(userSchemaReg), UserController.registrationUser);
