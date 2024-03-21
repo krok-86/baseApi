@@ -52,5 +52,4 @@ export class Book {
 
   @ManyToOne(() => Author, (author) => author.books)
   author: Author;
- 
 }

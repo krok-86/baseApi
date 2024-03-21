@@ -4,7 +4,7 @@ import { User } from "../entity/User.entity";
 import { CustomError } from "../error";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
-import { DeleteResult } from "typeorm";
+import { DeleteResult, In } from "typeorm";
 import { Book } from "../entity/Book.entity";
 
 const userRepository = AppDataSource.getRepository(User);
@@ -357,6 +357,18 @@ class UserController {
           if (!user) {
             throw new CustomError("User not found", 404);
           }
+          // console.log("<>><><><><>><>><><",user.cart)
+          // const booksIdsInCart = user.cart.map((book) => +book.id);
+          // const [cartBooks, cartBooksCount] = await bookRepository.findAndCount({
+          //   where: { id: In(booksIdsInCart) },
+          // });
+          // const response = {
+          //   // user: user,
+          //   cartBooks: cartBooks,
+          //   bookCount: cartBooksCount,
+          // };
+          // console.log("<>><><><><>><>><><",response.bookCount)
+          // res.json(response);
           res.json(user.cart);
         } catch (err) {
           err.message = "Server error: could not get cart books";
@@ -414,11 +426,6 @@ class UserController {
       if (!user) {
         throw new CustomError("User not found", 404);
       }
-      // const [book, count] = await bookRepository.findAndCount ({
-      //   where: { id: book },
-      //   relations: ["favorite.book"]
-      // })
-      // console.log("<><><><><>", [book, count] )
       res.json(user.favorite);
     } catch (err) {
       err.message = "Server error: could not get favorite books";
