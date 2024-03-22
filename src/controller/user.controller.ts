@@ -327,15 +327,25 @@ class UserController {
           if (!bookToAdd) {
             throw new CustomError("Book not found", 404);
           }
-          const isBookAlreadyAdded = user.cart.some(
-            (book) => book.id === +bookId
-          );
-          if (isBookAlreadyAdded) {
-            const dislike = user.cart.filter((el) => el.id !== +bookId);
-            user.cart = dislike;
-          } else {
+          // const existingBookIndex = user.cart.findIndex(
+          //   (book) => book.id === +bookId
+          // );
+          // if (existingBookIndex !== -1) {
+          //   // Если книга уже добавлена, то можно обновить количество или другие свойства
+          //   user.cart[existingBookIndex] = bookToAdd;
+          // } else {
+          //   user.cart.push(bookToAdd);
+          // }
+          // const isBookAlreadyAdded = user.cart.some(
+          //   (book) => book.id === +bookId
+          // );
+          // if (isBookAlreadyAdded) {
+          //   const dislike = user.cart.filter((el) => el.id !== +bookId);
+          //   user.cart = dislike;
+          // } else {
             user.cart.push(bookToAdd);
-          }
+          // }
+          console.log(user)
           await userRepository.save(user);
           res.json(user);
         } catch (err) {
@@ -356,22 +366,60 @@ class UserController {
           });
           if (!user) {
             throw new CustomError("User not found", 404);
-          }
-          // console.log("<>><><><><>><>><><",user.cart)
-          // const booksIdsInCart = user.cart.map((book) => +book.id);
-          // const [cartBooks, cartBooksCount] = await bookRepository.findAndCount({
-          //   where: { id: In(booksIdsInCart) },
-          // });
-          // const response = {
-          //   // user: user,
-          //   cartBooks: cartBooks,
-          //   bookCount: cartBooksCount,
-          // };
-          // console.log("<>><><><><>><>><><",response.bookCount)
-          // res.json(response);
-          res.json(user.cart);
+          }          
+          const booksIdsInCart = user.cart.map((book) => +book.id);
+          const [cartBooks, cartBooksCount] = await bookRepository.findAndCount({
+            where: { id: In(booksIdsInCart) },
+          });
+          const response = {
+            //user: user,
+            cartBooks: cartBooks,
+            bookCount: cartBooksCount,
+          };         
+          res.json(response);         
         } catch (err) {
           err.message = "Server error: could not get cart books";
+          err.code = "500";
+          next(err);
+        }
+      };
+      static removeBookFromCart = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+      ): Promise<void> => {
+        try {
+          // const userId: number = req.body.userId; // Получаем идентификатор пользователя
+          const bookId: number = +req.params.id; // Получаем идентификатор книги
+    
+          // Находим пользователя по идентификатору
+          const user: User | undefined = await userRepository.findOne({
+            where: { id: req.body.userUniqId },
+            relations: ["cart"],
+          });
+    
+          if (!user) {
+            throw new CustomError("User not found", 404);
+          }
+    
+          // Находим индекс книги в массиве favorite пользователя
+          const book: number = user.cart.findIndex(
+            (book) => book.id === bookId
+          );
+    
+          if (book === -1) {
+            throw new CustomError("Book not found in cart", 404);
+          }
+          const bookDelete = user.cart[book];
+          // Удаляем книгу из массива favorite
+          user.cart.splice(book, 1);
+    
+          // Сохраняем изменения
+          await userRepository.save(user);
+    
+          res.json(bookDelete);
+        } catch (err) {
+          err.message = "Server error: unable to remove book from cart";
           err.code = "500";
           next(err);
         }
@@ -433,47 +481,7 @@ class UserController {
       next(err);
     }
   };
-  // static removeBookFromFavorite = async (
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ): Promise<void> => {
-  //   try {
-  //     const userId: number = req.body.userId; // Получаем идентификатор пользователя
-  //     const bookId: number = req.body.bookId; // Получаем идентификатор книги
 
-  //     // Находим пользователя по идентификатору
-  //     const user: User | undefined = await userRepository.findOne({
-  //       where: { id: +userId },
-  //       relations: ["favorite"],
-  //     });
-
-  //     if (!user) {
-  //       throw new CustomError("User not found", 404);
-  //     }
-
-  //     // Находим индекс книги в массиве favorite пользователя
-  //     const index: number = user.favorite.findIndex(
-  //       (book) => book.id === bookId
-  //     );
-
-  //     if (index === -1) {
-  //       throw new CustomError("Book not found in favorites", 404);
-  //     }
-
-  //     // Удаляем книгу из массива favorite
-  //     user.favorite.splice(index, 1);
-
-  //     // Сохраняем изменения
-  //     await userRepository.save(user);
-
-  //     res.json({ message: "Book removed from favorites successfully" });
-  //   } catch (err) {
-  //     err.message = "Server error: unable to remove book from favorites";
-  //     err.code = "500";
-  //     next(err);
-  //   }
-  // };
   // static getBooksFromFavorite = async (
   //   req: Request,
   //   res: Response,
