@@ -8,6 +8,7 @@ import { Book } from "./entity/Book.entity";
 import bookRoutes from "./routes/book.routes";
 import genreRoutes from "./routes/genre.routes";
 import postRoutes from "./routes/post.routes";
+import cartRoutes from "./routes/cart.routes";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -36,6 +37,7 @@ AppDataSource.initialize()
     app.use("/books", cors(), bookRoutes);
     app.use("/posts", cors(), postRoutes);
     app.use("/genres", cors(), genreRoutes);
+    app.use("/cart", cors(), cartRoutes);
     app.use(express.static("uploads"));
 
     app.use(

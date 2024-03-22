@@ -5,11 +5,14 @@ import {
   CreateDateColumn,
   OneToMany,
   JoinTable,
-  ManyToMany,  
+  ManyToMany,
+  OneToOne,
+  JoinColumn,
 } from "typeorm";
 import { Rating } from "./Rating.entyty";
 import { Post } from "./Post.entity";
 import { Book } from "./Book.entity";
+import { Cart } from "./Cart.entity";
 
 @Entity()
 export class User {
@@ -26,7 +29,7 @@ export class User {
   @Column({
     unique: true,
     type: "text",
-    nullable: false
+    nullable: false,
   })
   email: string;
 
@@ -39,23 +42,42 @@ export class User {
   @Column({ nullable: true })
   avatarImg: string;
 
+  @ManyToMany(() => Book)
+  @JoinTable()
+  favorite: Book[];
+
+  @OneToMany(() => Rating, (rating) => rating.user)
+  rating: Rating[];
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
+}
+
   // @Column("int", { array: true, nullable: true })
   // cart: number[];//fallback option
 
   // @Column("int", { array: true, nullable: true })
   // favorite: number[];
 
-  @ManyToMany(() => Book)
-  @JoinTable()
-  cart: Book[]
+  //   @ManyToMany(() => Book)
+  //   @JoinTable(
+  //     {
+  //     name: 'cart',
+  //     joinColumns: [
+  //         { name: 'cart_id' },
+  //         { name: 'userId' }
+  //     ]
+  // }
+  // )
+  //   cart: Book[]
 
-  @ManyToMany(() => Book)
-    @JoinTable()
-    favorite: Book[]
-
-  @OneToMany(() => Rating, (rating) => rating.user)
-    rating: Rating[];
-
-  @OneToMany(() => Post, (post) => post.user)
-    posts: Post[];
-}
+  // @ManyToMany(() => Book, (book) => book.user)
+  // @JoinTable({
+  // book: Book[],
+  // joinColumn: {
+  //   name: 'cartId',
+  //   referencedColumnName: 'id'
+  // }
+  // })
+  // @OneToOne(() => Cart)
+  // cart: Cart[];

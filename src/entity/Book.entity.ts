@@ -10,8 +10,7 @@ import { Rating } from "./Rating.entyty";
 import { Author } from "./Author.entity";
 import { Genre } from "./Genre.entity";
 import { Post } from "./Post.entity";
-// import { Favorite } from "./Favorite.entity";
-
+import { CartItem } from "./CartItem.entity";
 @Entity()
 export class Book {
   @PrimaryGeneratedColumn()
@@ -44,6 +43,9 @@ export class Book {
   @OneToMany(() => Rating, (rating) => rating.book)
   ratings: Rating[];
 
+  @OneToMany(() => CartItem, (cartItem) => cartItem.book)
+  cartItems: CartItem[];
+
   @OneToMany(() => Post, (post) => post.book)
   posts: Post[];
 
@@ -52,4 +54,13 @@ export class Book {
 
   @ManyToOne(() => Author, (author) => author.books)
   author: Author;
+
+//   @ManyToMany(() => User)
+//   @JoinColumn({
+//     name: 'BookId',
+// })
+//   cart: User[]
 }
+//   @ManyToMany(() => User, (user) => user.book)
+//   book: User[];
+

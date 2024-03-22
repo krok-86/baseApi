@@ -9,9 +9,9 @@ const router = Router();
 
 router.get("/favorite", checkAuth, UserController.getFavoriteBooks);
 router.put("/favorite/:id", checkAuth, UserController.addBookToFavorite);
-router.delete("/cart/:id", checkAuth, UserController.removeBookFromCart);
-router.get("/cart", checkAuth, UserController.getCartBooks);
-router.put("/cart/:id", checkAuth, UserController.addBookToCart);
+// router.delete("/cart/:id", checkAuth, UserController.removeBookFromCart);
+// router.get("/cart", checkAuth, UserController.getCartBooks);
+// router.put("/cart/:id", checkAuth, UserController.addBookToCart);
 //create user
 router.post("/registration", validation(userSchemaReg), UserController.registrationUser);
 router.post("/authorization", validation(userSchemaAuth), UserController.authorizationUser);
