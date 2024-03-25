@@ -19,7 +19,6 @@ class cartItemController {
             
             const user = await UserRepository.findOne({ where: { id: req.body.userUniqId } });
         
-           
             const book = await BookRepository.findOne({ where: { id: +req.params.id } });
 
             const cart = await CartItemRepository.findOne({ where: { user, book} });
@@ -31,13 +30,11 @@ class cartItemController {
               return;
             }
         
-           
             const cartItem = new CartItem();
             cartItem.countBook = 1;
             cartItem.user = user;
             cartItem.book = book;
         
-           
            await CartItemRepository.save(cartItem);
            const result = await CartItemRepository.findOne({ where: { user, book}, relations: ["book", "book.author"] });
            res.json(result);
