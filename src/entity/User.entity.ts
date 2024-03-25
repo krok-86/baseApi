@@ -12,7 +12,7 @@ import {
 import { Rating } from "./Rating.entyty";
 import { Post } from "./Post.entity";
 import { Book } from "./Book.entity";
-import { Cart } from "./Cart.entity";
+import { CartItem } from "./CartItem.entity";
 
 @Entity()
 export class User {
@@ -51,6 +51,9 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => CartItem, (cartItem) => cartItem.user)
+    cartItems: CartItem[]
 }
 
   // @Column("int", { array: true, nullable: true })

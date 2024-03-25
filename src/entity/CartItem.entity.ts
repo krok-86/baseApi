@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn, OneToMany } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn, OneToMany, CreateDateColumn } from "typeorm"
 import { Book } from "./Book.entity"
-import { Cart } from "./Cart.entity"
+import { User } from "./User.entity"
 
 @Entity()
 export class CartItem {
@@ -10,9 +10,12 @@ export class CartItem {
     @Column()
     countBook: number
 
-    @ManyToOne(() => Cart, (cart) => cart.cartItems)
-    cart: Cart
+    @CreateDateColumn({ type: "timestamptz", nullable: true })
+    created_at: Date;
+    
+    @ManyToOne(() => User, (user) => user.cartItems)
+    user: User
 
     @ManyToOne(() => Book, (book) => book.cartItems)
-    book: Book
+    book: Book    
   }
