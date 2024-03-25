@@ -27,7 +27,7 @@ class UserController {
       rating: null,
       posts: [],
       favorite: null,
-      // cart: null,
+      cartItems: null,
     };
     try {
       const userWithEmail: User | undefined = await userRepository.findOne({
