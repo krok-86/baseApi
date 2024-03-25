@@ -36,10 +36,9 @@ AppDataSource.initialize().then(async () => {
     const book = new Book();
     (book.title = faker.lorem.words(2));
     (book.description = faker.lorem.words(10));
-    (book.picture = "1.png"); //faker.image.avatar(),
+    (book.picture = "1.png");
     book.rating = faker.datatype.number({ min: 1.0, max: 5.0 });
     book.price = faker.datatype.number({ min: 10, max: 1000 });
-    //book.dateOfIssue = null; //faker.date.birthdate()
     book.authorId = faker.datatype.number({ min: 1, max: 3 });
     book.genreId = faker.datatype.number({ min: 1, max: 3 });
     await AppDataSource.manager.save(book);
@@ -49,7 +48,6 @@ AppDataSource.initialize().then(async () => {
   for (let i = 0; i < 12; i++) {
     const post = new Post();
     (post.postText = faker.lorem.words(40));
-    // post.created_at = faker.date.birthdate()
     (post.bookId = faker.datatype.number({ min: 1, max: 20 }));
     (post.userId = faker.datatype.number({ min: 1, max: 20 }));
     await AppDataSource.manager.save(post);

@@ -11,7 +11,11 @@ const bookRepository = AppDataSource.getRepository(Book);
 
 class PostController {
   static createPost = async (
-    req: Request <any, any, { userId: number, bookId: number, postText: string }>,
+    req: Request<
+      any,
+      any,
+      { userId: number; bookId: number; postText: string }
+    >,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -34,13 +38,13 @@ class PostController {
       const post = await postRepository.save({
         bookId: book.id,
         postText: postText,
-        userId: user.id
+        userId: user.id,
       });
       if (!post) {
         throw new CustomError("Post was not created", 404);
       }
       await postRepository.save(post);
-      const postValue = { ... post, user} 
+      const postValue = { ...post, user };
       res.json(postValue);
     } catch (err) {
       next(err);
@@ -54,7 +58,7 @@ class PostController {
     try {
       const posts: Post[] = await postRepository.find({
         where: { bookId: +req.params.bookId },
-        relations:{book:true, user:true},
+        relations: { book: true, user: true },
       });
       if (!posts) {
         throw new CustomError("Posts are not found", 404);
@@ -69,15 +73,14 @@ class PostController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    console.log(">>>>>>",req.body);
     try {
-      const id:number = +req.params.id;
+      const id: number = +req.params.id;
       if (!id) {
         throw new CustomError("Id of posts is not correct", 400);
       }
       const post: Post[] = await postRepository.find({
         where: { id },
-        relations:{book:true, user:true}
+        relations: { book: true, user: true },
       });
       if (!post) {
         throw new CustomError("Post are not found", 404);

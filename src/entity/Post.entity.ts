@@ -1,29 +1,34 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn } from "typeorm"
-import { User } from "./User.entity"
-import { Book } from "./Book.entity"
-
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+} from "typeorm";
+import { User } from "./User.entity";
+import { Book } from "./Book.entity";
 
 @Entity()
-export class Post {//rating
-    @PrimaryGeneratedColumn()
-    id: number
+export class Post {
 
-    @Column({ type: "text", nullable: true })
-    postText: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @CreateDateColumn({ type: "timestamptz", nullable: true })
-    created_at: Date; // Creation date
+  @Column({ type: "text", nullable: true })
+  postText: string;
 
-    @Column({nullable: true })
-    userId: number
+  @CreateDateColumn({ type: "timestamptz", nullable: true })
+  created_at: Date; // Creation date
 
-    @Column({nullable: true })
-    bookId: number
+  @Column({ nullable: true })
+  userId: number;
 
-    @ManyToOne(() => User, (user) => user.posts)
-    user: User
+  @Column({ nullable: true })
+  bookId: number;
 
-    @ManyToOne(() => Book, (book) => book.posts)
-    book: Book
-}
+  @ManyToOne(() => User, (user) => user.posts)
+  user: User;
 
+  @ManyToOne(() => Book, (book) => book.posts)
+  book: Book;
+};

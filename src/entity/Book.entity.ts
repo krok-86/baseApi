@@ -32,7 +32,7 @@ export class Book {
   price: number;
 
   @CreateDateColumn({ type: "date", nullable: true })
-    dateOfIssue: Date;
+  dateOfIssue: Date;
 
   @Column({ nullable: true })
   authorId: number;
@@ -54,13 +54,4 @@ export class Book {
 
   @ManyToOne(() => Author, (author) => author.books)
   author: Author;
-
-//   @ManyToMany(() => User)
-//   @JoinColumn({
-//     name: 'BookId',
-// })
-//   cart: User[]
 }
-//   @ManyToMany(() => User, (user) => user.book)
-//   book: User[];
-

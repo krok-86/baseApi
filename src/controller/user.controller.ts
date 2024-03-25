@@ -22,8 +22,6 @@ class UserController {
       password: req.body.password,
       id: Number(),
       avatarImg: req.body.avatarImg || "",
-      // cart: [],
-      // favorite: [],
       rating: null,
       posts: [],
       favorite: null,
@@ -55,7 +53,7 @@ class UserController {
         }
       );
       const result: User = await userRepository.save(user);
-      res.json({ userData: result, token });
+      res.json({ userData: result, token, message: "The user has been registered!" });
     } catch (err) {
       err.message = "Server error: user was not created";
       err.code = "500";
@@ -92,9 +90,9 @@ class UserController {
           expiresIn: "7d",
         }
       );
-      res.json({ userData: user, token });
+      res.json({ userData: user, token, message: "The user has been authorizationed!" });
     } catch (err) {
-      err.message = "Server error: user was not authorized"; //add my err
+      err.message = "Server error: user was not authorized";
       err.code = "500";
       next(err);
     }
@@ -132,6 +130,8 @@ class UserController {
       }
       res.json(users);
     } catch (err) {
+      err.message = "Server error: users was not found";
+      err.code = "500";
       next(err);
     }
   };
@@ -153,6 +153,8 @@ class UserController {
       }
       res.json(user);
     } catch (err) {
+      err.message = "Server error: user was not found";
+      err.code = "500";
       next(err);
     }
   };
@@ -172,6 +174,8 @@ class UserController {
       }
       res.json({ message: "User deleted!" });
     } catch (err) {
+      err.message = "Server error: user was not found";
+      err.code = "500";
       next(err);
     }
   };
@@ -185,23 +189,19 @@ class UserController {
       if (!id) {
         throw new CustomError("User id is not correct", 400);
       }
-
       if (req.body.email === "") {
         throw new CustomError("Email field have to be filled", 400);
       }
-
       if (req.body.email) {
         const userWithEmail: User = await userRepository.findOneBy({
           email: req.body.email,
         });
       }
-
       if (req.body.password) {
         const salt: string = await bcrypt.genSalt(10);
         const hash: string = await bcrypt.hash(req.body.password, salt);
         req.body.password = hash;
       }
-
       const results = await userRepository.update(id, {
         fullName: req.body.fullName,
         email: req.body.email,
@@ -209,7 +209,6 @@ class UserController {
         password: req.body.password,
         avatarImg: req.file?.filename || req.body.avatarImg,
       });
-
       const user: User | undefined = await userRepository
         .createQueryBuilder("user")
         .addSelect("user.password")
@@ -218,201 +217,14 @@ class UserController {
       if (!user) {
         throw new CustomError("User is not found", 404);
       }
-
       res.json(user);
     } catch (err) {
+      err.message = "Server error: user was not update";
+      err.code = "500";
       next(err);
     }
   };
-  // static addBookToCart = async (
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ): Promise<void> => {
-  //   try {
-  //     const id: number = Number(req.params.id);
-  //     console.log(">>>>>>>>>>User id is not correct",id)
-  //     if (!id) {
-  //       throw new CustomError(">>>>>>>>>>User id is not correct", 400); //fix
-  //     }
-  //     const user: User | undefined = await userRepository.findOne({
-  //       where: { id: req.body.userUniqId },
-  //     });
-  //     if (!user) {
-  //       throw new CustomError("User is not found", 404);
-  //     }
-  //     //@ts-ignore
-  //     const updatedBooks: Book[] = user.books ? [...user.books, id] : [id];
-  //     const result = await userRepository.update(req.body.userUniqId, {
-  //       books: updatedBooks,
-  //     });
-  //     // const result = await userRepository.update(req.body.userUniqId, {
-  //     //   //@ts-ignore
-  //     //   books: user.books ? [...user.books, id] : [id],
-  //     // });
-  //     res.json(result);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // };
-  // static addBookToCart = async (
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ): Promise<void> => {
-  //   try {
-  //     const bookId = req.params.id;
-  //     const user = await userRepository.findOne({
-  //       where: { id: req.body.userUniqId },
-  //       relations: ["books"],
-  //     });
-  //     if (!user) {
-  //       throw new CustomError("User not found", 404);
-  //     }
-  //     const bookToAdd = await bookRepository.findOne({
-  //       where: { id: +bookId },
-  //     });
-  //     if (!bookToAdd) {
-  //       throw new CustomError("Book not found", 404);
-  //     }
-  //     if (!user.books) {
-  //       user.books = []        
-  //     }
-  //     console.log("<<<<<<<<<<<<<<<<<<",user.books)
-  //     user.books.push(bookToAdd);
-  //     console.log("<<<<<<<<<<<<<<<<<<",user)
-  //     await userRepository.save(user);
-  //     res.json(user);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // };
-      // const userId: number = Number(req.params.userId);
-      // const bookId: number = Number(req.params.bookId);
-      // //@ts-ignore
-      // const user = await userRepository.findOne(userId, { relations: ["books"] });
-      // //@ts-ignore
-      // const book = await bookRepository.findOne(bookId);
 
-      // if (!user || !book) {
-      //   throw new CustomError("User or book not found", 404);
-      // }
-
-      // if (!user.books) {
-      //     user.books = [];
-      // }
-
-      // user.books.push(book);
-
-      // await userRepository.save(user);
-      // res.json(user);
-
-      // static addBookToCart = async (//actuale
-      //   req: Request,
-      //   res: Response,
-      //   next: NextFunction
-      // ): Promise<void> => {
-      //   try {
-      //     const bookId = req.params.id;
-      //     const user = await userRepository.findOne({
-      //       where: { id: req.body.userUniqId },
-      //       relations: ["cart"],
-      //     });
-      //     if (!user) {
-      //       throw new CustomError("User not found", 404);
-      //     }
-      //     const bookToAdd = await bookRepository.findOne({
-      //       where: { id: +bookId },
-      //     });
-      //     if (!bookToAdd) {
-      //       throw new CustomError("Book not found", 404);
-      //     }
-      //     // const existingBookIndex = user.cart.findIndex(
-      //     //   (book) => book.id === +bookId
-      //     // );
-      //     // if (existingBookIndex !== -1) {
-      //     //   // Если книга уже добавлена, то можно обновить количество или другие свойства
-      //     //   user.cart[existingBookIndex] = bookToAdd;
-      //     // } else {
-      //     //   user.cart.push(bookToAdd);
-      //     // }
-      //     // const isBookAlreadyAdded = user.cart.some(
-      //     //   (book) => book.id === +bookId
-      //     // );
-      //     // if (isBookAlreadyAdded) {
-      //     //   const dislike = user.cart.filter((el) => el.id !== +bookId);
-      //     //   user.cart = dislike;
-      //     // } else {
-      //       user.cart.push(bookToAdd);
-      //     // }
-      //     console.log(user)
-      //     await userRepository.save(user);
-      //     res.json(user);
-      //   } catch (err) {
-      //     err.message = "Server error: user was not created";
-      //     err.code = "500";
-      //     next(err);
-      //   }
-      // };
-      //  static getCartBooks = async (
-      //   req: Request,
-      //   res: Response,
-      //   next: NextFunction
-      // ): Promise<void> => {
-      //   try {
-      //     const user = await userRepository.findOne({
-      //       where: { id: +req.body.userUniqId },
-      //       relations: ["cart", "cart.author"],
-      //     });
-      //     if (!user) {
-      //       throw new CustomError("User not found", 404);
-      //     }
-      //     const booksIdsInCart = user.cart.map((book) => +book.id);
-      //     const [cartBooks, cartBooksCount] = await bookRepository.findAndCount({
-      //       where: { id: In(booksIdsInCart) },
-      //     });
-      //     const response = {
-      //       //user: user,
-      //       cartBooks: cartBooks,
-      //       bookCount: cartBooksCount,
-      //     };
-      //     res.json(response);
-      //   } catch (err) {
-      //     err.message = "Server error: could not get cart books";
-      //     err.code = "500";
-      //     next(err);
-      //   }
-      // };
-      // static removeBookFromCart = async (
-      //   req: Request,
-      //   res: Response,
-      //   next: NextFunction
-      // ): Promise<void> => {
-      //   try {
-      //     const bookId: number = +req.params.id;
-      //     const user: User | undefined = await userRepository.findOne({
-      //       where: { id: req.body.userUniqId },
-      //       relations: ["cart"],
-      //     });
-      //     if (!user) {
-      //       throw new CustomError("User not found", 404);
-      //     }
-      //     const book: number = user.cart.findIndex(
-      //       (book) => book.id === bookId
-      //     );
-      //     if (book === -1) {
-      //       throw new CustomError("Book not found in cart", 404);
-      //     }
-      //     const bookDelete = user.cart[book];
-      //     user.cart.splice(book, 1);
-      //     await userRepository.save(user);
-      //     res.json(bookDelete);
-      //   } catch (err) {
-      //     err.message = "Server error: unable to remove book from cart";
-      //     err.code = "500";
-      //     next(err);
-      //   }
-      // }; // end actuale
   static addBookToFavorite = async (
     req: Request,
     res: Response,
@@ -445,12 +257,12 @@ class UserController {
       await userRepository.save(user);
       res.json(user);
     } catch (err) {
-      err.message = "Server error: user was not created";
+      err.message = "Server error: The book has not been added to favorites";
       err.code = "500";
       next(err);
     }
   };
-   static getFavoriteBooks = async (
+  static getFavoriteBooks = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -465,32 +277,10 @@ class UserController {
       }
       res.json(user.favorite);
     } catch (err) {
-      err.message = "Server error: could not get favorite books";
+      err.message = "Server error: Сould not get favorite books";
       err.code = "500";
       next(err);
     }
   };
-
-  // static getBooksFromFavorite = async (
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ): Promise<void> => {
-  //   try {
-  //     const userId = req.params.userId;
-  //     const user = await userRepository.findOne({
-  //       where: { id: req.body.userUniqId },
-  //       relations: ["favorite"],
-  //     });
-  //     if (!user) {
-  //       throw new CustomError("User not found", 404);
-  //     }
-  //     const favoriteBooks = user.favorite;
-  //     res.json(favoriteBooks);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // };
- 
 }
 export default UserController;

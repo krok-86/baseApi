@@ -2,7 +2,6 @@ import { Router } from "express";
 import { checkAuth } from "../middleware/checkAuth";
 import cartItemController from "../controller/cartItem.controller";
 
-
 const router = Router();
 
 router.get("/", checkAuth, cartItemController.getCartItem);

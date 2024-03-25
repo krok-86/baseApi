@@ -6,8 +6,6 @@ import {
   OneToMany,
   JoinTable,
   ManyToMany,
-  OneToOne,
-  JoinColumn,
 } from "typeorm";
 import { Rating } from "./Rating.entyty";
 import { Post } from "./Post.entity";
@@ -53,34 +51,5 @@ export class User {
   posts: Post[];
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.user)
-    cartItems: CartItem[]
-}
-
-  // @Column("int", { array: true, nullable: true })
-  // cart: number[];//fallback option
-
-  // @Column("int", { array: true, nullable: true })
-  // favorite: number[];
-
-  //   @ManyToMany(() => Book)
-  //   @JoinTable(
-  //     {
-  //     name: 'cart',
-  //     joinColumns: [
-  //         { name: 'cart_id' },
-  //         { name: 'userId' }
-  //     ]
-  // }
-  // )
-  //   cart: Book[]
-
-  // @ManyToMany(() => Book, (book) => book.user)
-  // @JoinTable({
-  // book: Book[],
-  // joinColumn: {
-  //   name: 'cartId',
-  //   referencedColumnName: 'id'
-  // }
-  // })
-  // @OneToOne(() => Cart)
-  // cart: Cart[];
+  cartItems: CartItem[];
+};

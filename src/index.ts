@@ -12,23 +12,7 @@ import cartRoutes from "./routes/cart.routes";
 
 AppDataSource.initialize()
   .then(async () => {
-
-//     const book = new Book
-// book.title = "sd ds g f fd h aid g  g"
-// book.description = "A thrilling detective story about a missing necklace"
-// book.picture = "5.png"
-// book.rating  = 3
-// book.price = 220
-// book.dateOfIssue = null
-// book.authorId = null
-// book.genreId = null
-
-// await AppDataSource.manager.save(book)
-// console.log("Book has been saved. Book id is", book.id)
-
-    console.log(
-      "Here you can setup and run express / fastify / any other framework."
-    );
+    console.log("Here you can setup and run express / fastify / any other framework.");
     const app = express();
     app.use(express.json());
     app.use(cors());
